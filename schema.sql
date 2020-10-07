@@ -1,0 +1,7 @@
+CREATE TABLE user (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  eml aiTEXT UNIQUE NOT NULL,
+  profile_pic TEXT NOT NULL
+);
+
