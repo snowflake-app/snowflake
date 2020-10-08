@@ -12,6 +12,7 @@ oauthlib = "*"
 pyopenssl = "*"
 flask-login = "*"
 click = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.8"

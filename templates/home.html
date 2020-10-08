@@ -1,0 +1,77 @@
+{% from "_formhelpers.html" import render_field %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Template Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/bulma@0.9.1/css/bulma.css" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" media="screen">
+</head>
+<body>
+
+<div class="navbar-menu">
+    <div class="navbar-start">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png"
+                     alt="Bulma: Free, open source, and modern CSS framework based on Flexbox" width="112" height="28">
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="navbar-end">
+        <!-- navbar items -->
+    </div>
+</div>
+
+<div class="container">
+    <div class="columns">
+        <div class="box column is-three-quarters">
+            <form method=post action="/appreciate">
+                <dl>
+                    {{ render_field(form.content) }}
+                </dl>
+                <button class="button" type="submit">
+                    Submit!
+                </button>
+            </form>
+            {% for appreciation in appreciations %}
+            <div>
+                <p>
+                    {{appreciation.content}}
+                </p>
+                <p>
+                    {{appreciation.creator.name}}
+                </p>
+                <p>
+                    {{appreciation.get_like_count()}}
+
+                <form method="post" action="/like">
+                    <button class="submit">Like</button>
+                    <input type="hidden" name="appreciation" value="{{appreciation.id}}">
+                </form>
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="box has-text-centered column is-one-quarter">
+            <h1 class="title">{{user.name}}</h1>
+            <p class="subtitle">{{user.email}}</p>
+            <p class="subtitle">{{user.designation}} @ {{user.team_name}}</p>
+
+            <img class="profile-picture" src="{{user.profile_pic}}">
+        </div>
+    </div>
+</div>
+
+
+<a href="/logout">logout</a>
+
+</body>
+</html>

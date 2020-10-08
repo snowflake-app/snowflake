@@ -1,10 +1,11 @@
 import json
 import os
 import sqlite3
+import time
 
 import requests
 # Third-party libraries
-from flask import Flask, redirect, request, url_for, render_template
+from flask import Flask, redirect, request, url_for, render_template, session
 from flask_login import (
     LoginManager,
     current_user,
@@ -14,9 +15,12 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 
-# Internal imports
 from db import init_db_command
-from user import User
+from forms import RegistrationForm, AppreciationForm, LikeForm
+# Internal imports
+from models.appreciation import Appreciation
+from models.likes import Like
+from models.user import User
 
 # Configuration
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -37,8 +41,9 @@ login_manager.init_app(app)
 # Naive database setup
 try:
     init_db_command()
-except sqlite3.OperationalError:
+except sqlite3.OperationalError as e:
     # Assume it's already been created
+    print(e)
     pass
 
 # OAuth 2 client setup
@@ -54,20 +59,43 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
+        form = AppreciationForm(request.form)
+        appreciations = Appreciation.get_all()
+        like_form = LikeForm(request.form)
+        return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
+                               like_form=like_form)
     else:
         return render_template('login.html')
 
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
+
+
+@app.route('/appreciate', methods=['POST'])
+def appreciate():
+    form = AppreciationForm(request.form)
+    if current_user.is_authenticated and form.validate():
+        appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=int(time.time()))
+        Appreciation.create(appreciation)
+
+        return redirect(url_for('index'))
+    else:
+        return render_template('login.html')
+
+
+@app.route('/like', methods=['POST'])
+def like():
+    form = LikeForm(request.form)
+    if current_user.is_authenticated and form.validate():
+        appreciation = Appreciation.get(form.appreciation.data)
+
+        like = Like(appreciation=appreciation, user=current_user)
+        Like.create(like)
+
+        return redirect(url_for('index'))
+    else:
+        return render_template('login.html')
 
 
 @app.route("/login")
@@ -127,15 +155,19 @@ def callback():
         users_email = userinfo_response.json()["email"]
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
-        # Create a user in your db with the information provided
-        # by Google
-        user = User(
-            id_=unique_id, name=users_name, email=users_email, profile_pic=picture
-        )
 
         # Doesn't exist? Add it to the database.
-        if not User.get(unique_id):
-            User.create(unique_id, users_name, users_email, picture)
+        user = User.get(unique_id)
+        if not user:
+            session['unique_id'] = unique_id
+            session['users_email'] = users_email
+            session['picture'] = picture
+            session['users_name'] = users_name
+            return redirect(url_for("register"))
+        # Create a user in your db with the information provided
+        # by Google
+
+        # Doesn't exist? Add it to the database.
 
         # Begin user session by logging the user in
         login_user(user)
@@ -144,6 +176,28 @@ def callback():
         return redirect(url_for("index"))
     else:
         return "User email not available or not verified by Google.", 400
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        unique_id = session['unique_id']
+        users_email = session['users_email']
+        picture = session['picture']
+        users_name = session['users_name']
+
+        user = User(id_=unique_id, email=users_email, name=users_name, profile_pic=picture,
+                    team_name=form.team_name.data, designation=form.designation.data)
+
+        User.create(user)
+
+        login_user(user)
+
+        return redirect(url_for('index'))
+
+    return render_template('register.html', form=form)
 
 
 @app.route("/logout")
