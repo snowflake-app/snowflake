@@ -1,22 +1,28 @@
-<!DOCTYPE html>
-<html>
+{% from "_formhelpers.html" import render_field %}
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Snowflake</title>
-  <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
-</head>
+{% extends "base.html" %}
+{% block page %}login centered{% endblock %}
 
-<body class="login centered">
-  <div class="box has-text-centered p-6">
-    <h1 class="title">Welcome to Snowflake</h1>
-    <p class="field">
-      <a href="/login" class="button is-light is-large">Sign in with Google</a>
+{% block content %}
+
+<div class="box has-text-centered p-6">
+    <p class="is-size-1 mb-4 has-text-primary">
+        <ion-icon name="snow-outline"></ion-icon>
     </p>
-  </div>
-  <script type="text/javascript" src="{{ url_for('static', filename='lib/main.js') }}"></script>
-</body>
+    <h1 class="title">Welcome to Snowflake!</h1>
+    <p class="subtitle block my-4">You can sign in with SSO, using your work email address</p>
+    <p class="field mt-6">
+        <a href="/login" class="button is-light is-large">
+        <span class="icon is-large">
+          <ion-icon size="large" name="logo-google"></ion-icon>
+        </span>
+            <span>
+          Sign in with Google
+        </span>
+        </a>
+    </p>
+</div>
 
-</html>
+{% endblock %}
+
+

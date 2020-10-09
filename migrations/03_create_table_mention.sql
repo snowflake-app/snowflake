@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS mention (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    appreciation_id INTEGER NOT NULL,
+    user_id TEXT NOT NULL
+)

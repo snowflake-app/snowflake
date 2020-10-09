@@ -22,13 +22,14 @@ class Like:
     def get_by_appreciation(appreciation):
         db = get_db()
         rows = db.execute(
-            'SELECT l.id,u.id,u.name,u.email,u.profile_pic,u.team_name,u.designation FROM likes l JOIN user u ON l.user_id=u.id WHERE l.appreciation_id=?',
+            'SELECT l.id,u.id,u.name,u.email,u.profile_pic,u.team_name,u.designation,u.username FROM likes l JOIN user u ON l.user_id=u.id WHERE l.appreciation_id=?',
             (appreciation.id,)).fetchall()
         likes = []
 
         for row in rows:
             user = User(
-                id_=row[1], name=row[2], email=row[3], profile_pic=row[4], team_name=row[5], designation=row[6]
+                id_=row[1], name=row[2], email=row[3], profile_pic=row[4], team_name=row[5], designation=row[6],
+                username=row[7]
             )
 
             like = Like(

@@ -1,6 +1,8 @@
 import json
 import os
+import re
 import time
+from datetime import datetime
 
 import requests
 # Third-party libraries
@@ -14,10 +16,12 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 
-from forms import RegistrationForm, AppreciationForm, LikeForm
+from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm
 # Internal imports
 from models.appreciation import Appreciation
+from models.comment import Comment
 from models.like import Like
+from models.mention import Mention
 from models.user import User
 
 # Configuration
@@ -54,8 +58,13 @@ def index():
         form = AppreciationForm(request.form)
         appreciations = Appreciation.get_all()
         like_form = LikeForm(request.form)
+        appreciations_given = Appreciation.count_by_user(current_user)
+        appreciations_received = Mention.count_by_user(current_user)
+        most_appreciated = Appreciation.most_appreciated()
+
         return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
-                               like_form=like_form)
+                               like_form=like_form, appreciations_given=appreciations_given,
+                               appreciations_received=appreciations_received, most_appreciated=most_appreciated)
     else:
         return render_template('login.html')
 
@@ -71,6 +80,14 @@ def appreciate():
         appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=int(time.time()))
         Appreciation.create(appreciation)
 
+        mentions = re.findall(r'@[a-zA-Z0-9\._]+', form.content.data)
+        for mention in mentions:
+            user = User.get_by_username(mention[1:])
+            if user is None:
+                continue
+            m = Mention(user=user, appreciation=appreciation)
+            Mention.create(m)
+
         return redirect(url_for('index'))
     else:
         return render_template('login.html')
@@ -84,6 +101,20 @@ def like():
 
         like = Like(appreciation=appreciation, user=current_user)
         Like.create(like)
+
+        return redirect(url_for('index'))
+    else:
+        return render_template('login.html')
+
+
+@app.route('/comment', methods=['POST'])
+def comment():
+    form = CommentForm(request.form)
+    if current_user.is_authenticated and form.validate():
+        appreciation = Appreciation.get(form.appreciation.data)
+
+        c = Comment(appreciation=appreciation, user=current_user, content=form.content.data, created_at=datetime.now())
+        Comment.create(c)
 
         return redirect(url_for('index'))
     else:
@@ -191,10 +222,11 @@ def register():
         unique_id = session['unique_id']
         users_email = session['users_email']
         picture = session['picture']
-        users_name = session['users_name']
+        full_name = session['users_name']
+        username = users_email.split("@")[0]
 
-        user = User(id_=unique_id, email=users_email, name=users_name, profile_pic=picture,
-                    team_name=form.team_name.data, designation=form.designation.data)
+        user = User(id_=unique_id, email=users_email, name=full_name, profile_pic=picture,
+                    team_name=form.team_name.data, designation=form.designation.data, username=username)
 
         User.create(user)
 
@@ -202,7 +234,7 @@ def register():
 
         return redirect(url_for('index'))
 
-    return render_template('register.html', form=form)
+    return render_template('welcome.html', form=form, user_name=session['users_name'], picture=session['picture'])
 
 
 @app.route("/logout")
