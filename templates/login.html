@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Flask Template Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/bulma@0.9.1/css/bulma.css" rel="stylesheet" media="screen">
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" media="screen">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snowflake</title>
+  <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
 </head>
-<body>
 
-<div class="box has-text-centered">
-    <h1 class="title">Snowflake</h1>
-    <p>
-        <a href="/login" class="button is-light is-large">Sign in with Google</a>
+<body class="login centered">
+  <div class="box has-text-centered p-6">
+    <h1 class="title">Welcome to Snowflake</h1>
+    <p class="field">
+      <a href="/login" class="button is-light is-large">Sign in with Google</a>
     </p>
-</div>
-
+  </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/main.js') }}"></script>
 </body>
+
 </html>

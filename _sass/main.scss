@@ -1,0 +1,67 @@
+@charset "utf-8";
+
+@import "../node_modules/bulma/sass/utilities/initial-variables";
+
+$orange: #e96125;
+$primary: $orange;
+
+@import "../node_modules/bulma/bulma";
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #f6f7f8;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome, .home {
+  textarea {
+    resize: none;
+  }
+}
+
+.navbar-dropdown .navbar-item {
+  align-items: center;
+  .icon {
+    margin-right: 1rem;
+  }
+}
+
+.home .header {
+  .avatar {
+    margin: auto;
+  }
+}
+
+.clear-button {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.post-action-button {
+  ion-icon {
+    font-size: 1.25rem;
+    pointer-events: none;
+  }
+}
+
+.participants-avatar:not(:first-child) {
+  margin-left: -1rem;
+}
+
+.note-form {
+  .send-container {
+    height: 0;
+  }
+}

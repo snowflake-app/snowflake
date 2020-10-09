@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snowflake</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="welcome centered">
+<div class="box p-6">
+  <div class="has-text-centered">
+    <h2 class="title">Hello {{user.name}}</h2>
+    <h3 class="subtitle">We need few bits of information before setting up your account</h3>
+  </div>
+  <form class="mt-4" action="home.html">
+    <div class="field">
+      <label for="team" class="label">Your team</label>
+      <div class="control">
+        <input id="team" class="input" type="text">
+      </div>
+    </div>
+    <div class="field">
+      <label for="designation" class="label">Designation</label>
+      <div class="control">
+        <input id="designation" class="input" type="text">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="bio" class="label">Bio</label>
+      <div class="control">
+        <textarea class="textarea" id="bio" rows="5" placeholder="A few lines about yourself"></textarea>
+      </div>
+    </div>
+
+    <div class="mt-5 has-text-centered">
+      <p>
+        <button class="button is-large is-primary" type="submit">Continue</button>
+      </p>
+    </div>
+  </form>
+</div>
+<script type="text/javascript" src="lib/main.js"></script>
+</body>
+
+</html>

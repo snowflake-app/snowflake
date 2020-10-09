@@ -1,77 +1,198 @@
 {% from "_formhelpers.html" import render_field %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Flask Template Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/bulma@0.9.1/css/bulma.css" rel="stylesheet" media="screen">
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" media="screen">
-</head>
-<body>
 
-<div class="navbar-menu">
-    <div class="navbar-start">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="https://bulma.io">
-                <img src="https://bulma.io/images/bulma-logo.png"
-                     alt="Bulma: Free, open source, and modern CSS framework based on Flexbox" width="112" height="28">
-            </a>
+{% extends "base.html" %}
+{% block page %}home{% endblock %}
 
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
+{% block content %}
+
+<header>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <span class="icon has-text-primary is-large">
+          <ion-icon size="large" name="snow-outline"></ion-icon>
+        </span>
+        <span class="title">
+          Snowflake
+        </span>
+      </a>
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+         data-target="menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="menu" class="navbar-menu">
+      <div class="navbar-start">
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Hello {{user.name}}
+          </a>
+
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item">
+              <span class="icon">
+                <ion-icon size="large" name="person-circle-outline"></ion-icon>
+              </span>
+              <span>
+                Profile
+              </span>
             </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item">
+              <span class="icon">
+                <ion-icon size="large" name="help-circle-outline"></ion-icon>
+              </span>
+              <span>
+                Help
+              </span>
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" href="/logout">
+              <span class="icon">
+                <ion-icon size="large" name="exit-outline"></ion-icon>
+              </span>
+              <span>
+                Sign out
+              </span>
+            </a>
+          </div>
         </div>
+      </div>
     </div>
-
-    <div class="navbar-end">
-        <!-- navbar items -->
-    </div>
-</div>
-
-<div class="container">
+  </nav>
+</header>
+<main class="mt-5">
+  <div class="container">
     <div class="columns">
-        <div class="box column is-three-quarters">
-            <form method=post action="/appreciate">
-                <dl>
-                    {{ render_field(form.content) }}
-                </dl>
-                <button class="button" type="submit">
-                    Submit!
-                </button>
-            </form>
-            {% for appreciation in appreciations %}
-            <div>
-                <p>
-                    {{appreciation.content}}
-                </p>
-                <p>
-                    {{appreciation.creator.name}}
-                </p>
-                <p>
-                    {{appreciation.get_like_count()}}
-
-                <form method="post" action="/like">
-                    <button class="submit">Like</button>
-                    <input type="hidden" name="appreciation" value="{{appreciation.id}}">
-                </form>
-                </p>
+      <div class="column is-two-thirds">
+        <div class="box">
+          <form class="note-form block" method="post" action="/appreciate">
+            <div class="field">
+              <label for="note-field" class="is-sr-only">Write a note a @mention to send a note</label>
+              <div class="control">
+                <textarea id="note-field" rows="2" class="textarea"
+                          name="{{form.content.name}}"
+                          placeholder="@mention someone to send them a note"></textarea>
+<!--                {{ render_field(form.content) }}-->
+              </div>
             </div>
-            {% endfor %}
+            <div class="field mt-2 send-container is-clipped">
+              <div class="control">
+                <button class="button is-info is-rounded is-medium">
+                  <span class="icon">
+                    <ion-icon name="paper-plane-outline" size="large"></ion-icon>
+                  </span>
+                  <span>
+                    Send note
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
+          <hr>
+          {% for appreciation in appreciations %}
+          <article class="appreciation media">
+            <figure class="media-left is-flex">
+              <div class="participants-avatar image is-48x48">
+                <img class="is-rounded" src="{{ appreciation.creator.profile_pic }}">
+              </div>
+              <div class="participants-avatar image is-48x48">
+                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+              </div>
+            </figure>
+            <div class="media-content">
+              <div class="content">
+                <div>
+                  <a><strong>{{appreciation.creator.name}}</strong></a>
+                  <small>31m</small>
+                </div>
+                <div class="mt-2">
+                  {{appreciation.content}}
+                </div>
+              </div>
+              <nav class="level is-mobile">
+                <div class="level-left">
+                    {% if appreciation.is_liked_by(user) %}
+                  <form class="level-item" method="post" action="/dislike">
+                    <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
+                      <button title="Like" type="submit" class="post-action-button clear-button has-text-danger level-item is-clickable">
+                        <span class="icon is-medium">
+                          <ion-icon name="heart"></ion-icon>
+                        </span>
+                        <span>
+                          {{appreciation.get_like_count()}}
+                        </span>
+                      </button>
+                  </form>
+                    {% else %}
+                    <form class="level-item" method="post" action="/like">
+                        <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
+                        <button title="Like" type="submit"
+                                class="post-action-button clear-button has-text-danger level-item is-clickable">
+                    <span class="icon is-medium">
+                    <ion-icon name="heart-outline"></ion-icon>
+                    </span>
+                            <span>
+                    {{appreciation.get_like_count()}}
+                    </span>
+                        </button>
+                    </form>
+                    {% endif %}
+                  <button title="Comment" class="post-action-button clear-button has-text-info level-item is-clickable">
+                    <span class="icon is-medium">
+                      <ion-icon name="chatbubble-outline"></ion-icon>
+                    </span>
+                  </button>
+                </div>
+              </nav>
+            </div>
+          </article>
+          {% endfor %}
         </div>
-        <div class="box has-text-centered column is-one-quarter">
-            <h1 class="title">{{user.name}}</h1>
-            <p class="subtitle">{{user.email}}</p>
-            <p class="subtitle">{{user.designation}} @ {{user.team_name}}</p>
-
-            <img class="profile-picture" src="{{user.profile_pic}}">
+      </div>
+      <div class="column is-one-third">
+        <div class="box block">
+          <div class="header pb-0 p-4 has-text-centered">
+            <figure class="avatar image mb-3 is-128x128">
+              <img class="is-rounded" src="{{ user.profile_pic }}">
+            </figure>
+            <h1 class="is-size-4"><a>{{user.name}}</a></h1>
+            <p>{{user.designation}} @ {{user.team_name}}</p>
+          </div>
+          <hr>
+          <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
+            <div class="is-flex is-flex-direction-column is-align-items-center">
+              <span class="given-count has-text-weight-bold is-size-4">12</span>
+              <span class="is-uppercase">Given</span>
+            </div>
+            <div class="is-flex is-flex-direction-column is-align-items-center">
+              <span class="received-count has-text-weight-bold is-size-4">6</span>
+              <span class="is-uppercase">Received</span>
+            </div>
+          </div>
         </div>
+        <nav class="panel is-info block">
+          <p class="panel-heading has-text-centered">
+            Most appreciated
+          </p>
+          <a class="panel-block p-3 is-active is-align-items-center">
+            <figure class="image is-24x24 mr-1">
+              <img class="is-rounded" src="https://bulma.io/images/placeholders/24x24.png">
+            </figure>
+            <span>{{user.name}}</span>
+            <span class="is-flex-grow-1"></span>
+            <span class="has-text-weight-bold">120</span>
+          </a>
+        </nav>
+      </div>
     </div>
-</div>
+  </div>
+</main>
+{% endblock %}
 
-
-<a href="/logout">logout</a>
-
-</body>
-</html>

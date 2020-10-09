@@ -1,0 +1,1 @@
+ALTER TABLE USER ADD COLUMN username text

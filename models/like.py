@@ -22,7 +22,8 @@ class Like:
     def get_by_appreciation(appreciation):
         db = get_db()
         rows = db.execute(
-            'SELECT l.id,u.id,u.name,u.email,u.profile_pic,u.team_name,u.designation FROM likes l JOIN user u ON l.user_id=u.id WHERE l.appreciation_id=?',(appreciation.id,)).fetchall()
+            'SELECT l.id,u.id,u.name,u.email,u.profile_pic,u.team_name,u.designation FROM likes l JOIN user u ON l.user_id=u.id WHERE l.appreciation_id=?',
+            (appreciation.id,)).fetchall()
         likes = []
 
         for row in rows:
@@ -36,3 +37,10 @@ class Like:
             likes.append(like)
 
         return likes
+
+    @staticmethod
+    def dislike(appreciation, user):
+        db = get_db()
+        db.execute(
+            'DELETE FROM likes where likes.appreciation_id=? and likes.user_id=?', (appreciation.id, user.id))
+        db.commit()

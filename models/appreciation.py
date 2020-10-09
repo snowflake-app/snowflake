@@ -24,7 +24,7 @@ class Appreciation():
     def get_all():
         db = get_db()
         rows = db.execute(
-            'SELECT a.id, a.content, a.created_at, u.id, u.name, u.email, u.profile_pic, u.team_name, u.designation FROM appreciation a JOIN user u ON a.creator = u.id').fetchall()
+            'SELECT a.id, a.content, a.created_at, u.id, u.name, u.email, u.profile_pic, u.team_name, u.designation FROM appreciation a JOIN user u ON a.creator = u.id ORDER BY a.created_at DESC').fetchall()
 
         appreciations = []
 
@@ -43,6 +43,13 @@ class Appreciation():
         total_likes = db.execute(
             'SELECT COUNT(*) FROM likes where likes.appreciation_id=?', (self.id,)).fetchone()[0]
         return total_likes
+
+    def is_liked_by(self, user: User):
+        db = get_db()
+        is_liked = db.execute(
+            'SELECT COUNT(*) FROM likes where likes.appreciation_id=? and likes.user_id=?',
+            (self.id, user.id)).fetchone()[0]
+        return is_liked > 0
 
     @staticmethod
     def get(id_):

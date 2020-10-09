@@ -1,6 +1,5 @@
 import json
 import os
-import sqlite3
 import time
 
 import requests
@@ -15,11 +14,10 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 
-from db import init_db_command
 from forms import RegistrationForm, AppreciationForm, LikeForm
 # Internal imports
 from models.appreciation import Appreciation
-from models.likes import Like
+from models.like import Like
 from models.user import User
 
 # Configuration
@@ -39,12 +37,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # Naive database setup
-try:
-    init_db_command()
-except sqlite3.OperationalError as e:
-    # Assume it's already been created
-    print(e)
-    pass
 
 # OAuth 2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
@@ -92,6 +84,19 @@ def like():
 
         like = Like(appreciation=appreciation, user=current_user)
         Like.create(like)
+
+        return redirect(url_for('index'))
+    else:
+        return render_template('login.html')
+
+
+@app.route('/dislike', methods=['POST'])
+def dislike():
+    form = LikeForm(request.form)
+    if current_user.is_authenticated and form.validate():
+        appreciation = Appreciation.get(form.appreciation.data)
+
+        Like.dislike(appreciation=appreciation, user=current_user)
 
         return redirect(url_for('index'))
     else:
@@ -208,4 +213,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
