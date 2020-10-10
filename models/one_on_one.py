@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from db import get_db
+from models.one_on_one_action_item import OneOnOneActionItem
 from models.user import User
 
 
@@ -86,3 +87,24 @@ class OneOnOne:
             one_on_ones.append(one_on_one)
 
         return one_on_ones
+
+    def get_action_items(self):
+        db = get_db()
+        rows = db.execute(
+            "SELECT i.id, i.content, i.created_by_id, i.state,"
+            " u.id, u.name, u.email, u.profile_pic, u.team_name, u.designation, u.username"
+            " FROM one_on_one_action_item i JOIN user u on i.created_by_id=u.id WHERE i.one_on_one_id=?", (self.id,))
+
+        action_items = []
+
+        for row in rows:
+            user = User(
+                id_=row[4], name=row[5], email=row[6], profile_pic=row[7], team_name=row[8], designation=row[9],
+                username=row[10]
+            )
+
+            action_item = OneOnOneActionItem(content=row[1], created_by=user, one_on_one=self, state=row[3], id_=row[0])
+
+            action_items.append(action_item)
+
+        return action_items

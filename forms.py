@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, validators, TextAreaField, HiddenField
+from wtforms import Form, StringField, validators, TextAreaField, HiddenField, BooleanField
 
 
 class RegistrationForm(Form):
@@ -21,3 +21,8 @@ class CommentForm(Form):
 
 class OneOnOneForm(Form):
     user = TextAreaField('User', [validators.DataRequired()])
+
+
+class OneOnOneActionItemForm(Form):
+    content = StringField('Content', [validators.DataRequired()])
+    one_on_one = HiddenField('')

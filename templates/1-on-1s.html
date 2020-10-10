@@ -1,7 +1,7 @@
 {% from "_formhelpers.html" import render_field %}
 
 {% extends "authenticated.html" %}
-{% block page %}1-on-1s{% endblock %}
+{% block page %}one-on-ones{% endblock %}
 
 {% block body %}
 
@@ -9,10 +9,10 @@
 <div class="container is-flex">
     <div class="menu">
         <p class="menu-label is-flex">
-            <span class="is-flex-grow-1">People</span>
+            <span class="is-flex-grow-1 is-size-6">People</span>
             <button title="Schedule new" id="launch-one-on-one-form" class="clear-button">
-                <span class="icon">
-                    <ion-icon icon="add-circle-outline"></ion-icon>
+                <span class="icon is-medium">
+                    <ion-icon class="is-size-4" icon="add-circle-outline"></ion-icon>
                 </span>
             </button>
         </p>
@@ -66,10 +66,34 @@
                         <a>{{one_on_one.created_by.name}}'s 1:1 with you</a>
                         {% endif %}
                     </h1>
-                    <!--                    <div class="mt-2 is-flex">-->
-                    <!--                        <span class="is-flex-grow-1">20 October, 2020</span>-->
-                    <!--                        <span class="tag is-warning is-uppercase">upcoming</span>-->
-                    <!--                    </div>-->
+                    <div class="block">
+                        <h3>Action items</h3>
+                        <ul class="action-items">
+                            {% for action_item in one_on_one.get_action_items() %}
+                            <li class="block is-flex align-items-center">
+                                <button class="clear-button mr-1">
+                                    <span class="icon">
+                                        <ion-icon size="large" name="checkmark-circle-outline"></ion-icon>
+                                    </span>
+                                </button>
+                                <span class="image is-24x24 mx-1">
+                                    <img class="is-rounded" src="{{ action_item.created_by.profile_pic }}">
+                                </span>
+                                <a class="mr-1" href="/profile/{{action_item.created_by.username}}">+{{action_item.created_by.name}}</a>
+                                <span>{{action_item.content}}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="block field">
+                            <form method="post" action="/1-on-1s/action-items" class="control has-icons-left">
+                                <input type="hidden" name="one_on_one" value="{{one_on_one.id}}">
+                                <input type="text" class="input" name="content" placeholder="Add action item">
+                                <span class="icon is-left">
+                                        <ion-icon name="add-circle-outline"></ion-icon>
+                                </span>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </article>

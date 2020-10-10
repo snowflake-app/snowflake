@@ -16,13 +16,14 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
-from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm
+from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm
 # Internal imports
 from models.appreciation import Appreciation
 from models.comment import Comment
 from models.like import Like
 from models.mention import Mention
 from models.one_on_one import OneOnOne
+from models.one_on_one_action_item import OneOnOneActionItem
 from models.user import User
 
 # Configuration
@@ -102,6 +103,20 @@ def one_on_one(_id):
 
     one_on_one = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
     return render_template('1-on-1s.html', one_on_ones=one_on_ones, form=form, one_on_one=one_on_one)
+
+
+@app.route('/1-on-1s/action-items', methods=['POST'])
+@login_required
+def one_on_one_action_item():
+    form = OneOnOneActionItemForm(request.form)
+
+    if form.validate():
+        o = OneOnOne.get(form.one_on_one.data)
+        action_item = OneOnOneActionItem(content=form.content.data, one_on_one=o, created_by=current_user, state=0)
+
+        OneOnOneActionItem.create(action_item)
+
+    return redirect(f'/1-on-1s/{form.one_on_one.data}')
 
 
 def get_google_provider_cfg():
