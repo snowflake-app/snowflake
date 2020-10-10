@@ -1,0 +1,6 @@
+CREATE TABLE one_on_one (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_by_id TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id TEXT NOT NULL
+)

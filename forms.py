@@ -17,3 +17,7 @@ class LikeForm(Form):
 class CommentForm(Form):
     content = TextAreaField('Content', [validators.DataRequired(), validators.Length(min=1, max=255)])
     appreciation = HiddenField('Appreciation', [validators.DataRequired()])
+
+
+class OneOnOneForm(Form):
+    user = TextAreaField('User', [validators.DataRequired()])

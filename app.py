@@ -10,19 +10,19 @@ from flask import Flask, redirect, request, url_for, render_template, session
 from flask_login import (
     LoginManager,
     current_user,
-    login_required,
     login_user,
     logout_user,
-)
+    login_required)
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
-from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm
+from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm
 # Internal imports
 from models.appreciation import Appreciation
 from models.comment import Comment
 from models.like import Like
 from models.mention import Mention
+from models.one_on_one import OneOnOne
 from models.user import User
 
 # Configuration
@@ -40,6 +40,7 @@ app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 # https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
 # Naive database setup
 
@@ -86,14 +87,21 @@ def profile(username):
         return render_template('login.html')
 
 
-@app.route('/1-on-1s')
-def one_on_one():
-    if current_user.is_authenticated:
-        user = current_user 
+@app.route('/1-on-1s', methods=['POST', 'GET'], defaults={'_id': None})
+@app.route('/1-on-1s/<_id>', methods=['POST', 'GET'])
+@login_required
+def one_on_one(_id):
+    form = OneOnOneForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User.get_by_username(form.user.data)
+        o = OneOnOne(user=user, created_by=current_user)
+        OneOnOne.create(o)
+        return redirect(url_for("one_on_one"))
 
-        return render_template('1-on-1s.html', user=user)
-    else:
-        return render_template('login.html')
+    one_on_ones = OneOnOne.get_by_user(current_user)
+
+    one_on_one = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
+    return render_template('1-on-1s.html', one_on_ones=one_on_ones, form=form, one_on_one=one_on_one)
 
 
 def get_google_provider_cfg():
@@ -135,17 +143,16 @@ def like():
 
 
 @app.route('/comment', methods=['POST'])
+@login_required
 def comment():
     form = CommentForm(request.form)
-    if current_user.is_authenticated and form.validate():
+    if form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
         c = Comment(appreciation=appreciation, user=current_user, content=form.content.data, created_at=datetime.now())
         Comment.create(c)
 
-        return redirect(url_for('index'))
-    else:
-        return render_template('login.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/dislike', methods=['POST'])

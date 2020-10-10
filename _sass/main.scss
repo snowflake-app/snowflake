@@ -8,12 +8,13 @@ $link: $orange;
 
 @import "../node_modules/bulma/bulma";
 
-html, body {
+html {
   width: 100%;
   height: 100%;
 }
 
 body {
+  min-height: 100%;
   background: #f6f7f8;
 }
 
