@@ -14,6 +14,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
 from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm
@@ -65,6 +66,32 @@ def index():
         return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
                                like_form=like_form, appreciations_given=appreciations_given,
                                appreciations_received=appreciations_received, most_appreciated=most_appreciated)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/profile', defaults={'username': None})
+@app.route('/profile/<username>')
+def profile(username):
+    if current_user.is_authenticated:
+
+        user = current_user if username is None else User.get_by_username(username)
+
+        appreciations_given = Appreciation.count_by_user(user)
+        appreciations_received = Mention.count_by_user(user)
+
+        return render_template('profile.html', user=user, appreciations_given=appreciations_given,
+                               appreciations_received=appreciations_received)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/1-on-1s')
+def one_on_one():
+    if current_user.is_authenticated:
+        user = current_user 
+
+        return render_template('1-on-1s.html', user=user)
     else:
         return render_template('login.html')
 
@@ -242,6 +269,25 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@app.template_filter()
+def add_mentions(text: str):
+    mentions = set(re.findall(r'@[a-zA-Z0-9\._]+', text))
+
+    replacement = {}
+    for mention in mentions:
+        username = mention[1:]
+        user = User.get_by_username(username)
+        if user is None:
+            continue
+
+        replacement[mention] = f'<a href="/profile/{username}">{mention}</a>'
+
+    for k, v in replacement.items():
+        text = text.replace(k, v)
+
+    return Markup(text)
 
 
 if __name__ == "__main__":

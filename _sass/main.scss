@@ -36,7 +36,7 @@ body {
   }
 }
 
-.welcome, .home .header {
+.welcome, .profile, .home .header {
   .avatar {
     margin: auto;
   }
@@ -66,4 +66,11 @@ body {
     height: 0;
   }
 }
+
+.profile {
+   .container  {
+     width: 50rem;
+   }
+}
+
 

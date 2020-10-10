@@ -1,0 +1,33 @@
+{% from "_formhelpers.html" import render_field %}
+
+{% extends "authenticated.html" %}
+{% block page %}profile{% endblock %}
+
+{% block body %}
+
+
+<div class="container">
+    <div class="box block">
+        <div class="header pb-0 p-4 has-text-centered">
+            <figure class="avatar image mb-3 is-128x128">
+                <img class="is-rounded" src="{{ user.profile_pic }}">
+            </figure>
+            <h1 class="is-size-4"><a>{{user.name}}</a></h1>
+            <p>{{user.designation}} @ {{user.team_name}}</p>
+        </div>
+        <hr>
+        <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
+            <div class="is-flex is-flex-direction-column is-align-items-center">
+                <span class="given-count has-text-weight-bold is-size-4">{{ appreciations_given }}</span>
+                <span class="is-uppercase">Given</span>
+            </div>
+            <div class="is-flex is-flex-direction-column is-align-items-center">
+                <span class="received-count has-text-weight-bold is-size-4">{{ appreciations_received }}</span>
+                <span class="is-uppercase">Received</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

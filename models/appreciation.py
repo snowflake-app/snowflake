@@ -36,7 +36,7 @@ class Appreciation:
         for row in rows:
             user = User(
                 id_=row[3], name=row[4], email=row[5], profile_pic=row[6], team_name=row[7], designation=row[8],
-                username=[9]
+                username=row[9]
             )
             appreciation = Appreciation(id_=row[0], content=row[1], created_at=row[2], creator=user)
 
