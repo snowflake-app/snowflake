@@ -11,16 +11,14 @@ class OneOnOneActionItem:
 
     @staticmethod
     def create(action_item):
-        db = get_db()
-        params = (
-            action_item.content, action_item.created_by.id, action_item.one_on_one.id,
-            action_item.state)
-
-        print(params)
-        db.execute(
-            "INSERT INTO one_on_one_action_item (content, created_by_id, one_on_one_id, state) "
-            "VALUES (?, ?, ?, ?)",
-            params,
-        )
-        action_item.id = db.execute("SELECT LAST_INSERT_ROWID()").fetchone()[0]
-        db.commit()
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    '''
+                    INSERT INTO one_on_one_action_item (content, created_by_id, one_on_one_id, state)
+                    VALUES (%s, %s, %s, %s) RETURNING id
+                    ''', (
+                        action_item.content, action_item.created_by.id, action_item.one_on_one.id,
+                        action_item.state),
+                )
+                action_item.id = c.fetchone()[0]

@@ -32,6 +32,7 @@ body {
 
 .navbar-dropdown .navbar-item {
   align-items: center;
+
   .icon {
     margin-right: 1rem;
   }
@@ -69,15 +70,13 @@ body {
 }
 
 .profile {
-   .container  {
-     width: 50rem;
-   }
+  .container {
+    width: 50rem;
+  }
 }
 
 .one-on-ones {
-    .action-items li {
-        border-bottom: 1px solid $border-light;
-    }
+  .action-items li {
+    border-bottom: 1px solid $border-light;
+  }
 }
-
-

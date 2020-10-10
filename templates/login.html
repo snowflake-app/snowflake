@@ -11,16 +11,18 @@
     </p>
     <h1 class="title">Welcome to Snowflake!</h1>
     <p class="subtitle block my-4">You can sign in with SSO, using your work email address</p>
-    <p class="field mt-6">
-        <a href="/login" class="button is-light is-large">
-        <span class="icon is-large">
-          <ion-icon size="large" name="logo-google"></ion-icon>
-        </span>
-            <span>
-          Sign in with Google
-        </span>
-        </a>
-    </p>
+    <form method="post" class="field mt-6">
+        <div class="control">
+            <button type="submit" class="button is-light is-large">
+                <span class="icon is-large">
+                  <ion-icon size="large" name="logo-google"></ion-icon>
+                </span>
+                    <span>
+                  Sign in with Google
+                </span>
+            </button>
+        </div>
+    </form>
 </div>
 
 {% endblock %}

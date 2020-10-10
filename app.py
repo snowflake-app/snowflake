@@ -26,6 +26,9 @@ from models.one_on_one import OneOnOne
 from models.one_on_one_action_item import OneOnOneActionItem
 from models.user import User
 
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+
 # Configuration
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
@@ -33,17 +36,11 @@ GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
 
-# Flask app setup
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
-
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
-# Naive database setup
 
 # OAuth 2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
@@ -56,36 +53,30 @@ def load_user(user_id):
 
 
 @app.route("/")
+@login_required
 def index():
-    if current_user.is_authenticated:
-        form = AppreciationForm(request.form)
-        appreciations = Appreciation.get_all()
-        like_form = LikeForm(request.form)
-        appreciations_given = Appreciation.count_by_user(current_user)
-        appreciations_received = Mention.count_by_user(current_user)
-        most_appreciated = Appreciation.most_appreciated()
+    form = AppreciationForm(request.form)
+    appreciations = Appreciation.get_all()
+    like_form = LikeForm(request.form)
+    appreciations_given = Appreciation.count_by_user(current_user)
+    appreciations_received = Mention.count_by_user(current_user)
+    most_appreciated = Appreciation.most_appreciated()
 
-        return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
-                               like_form=like_form, appreciations_given=appreciations_given,
-                               appreciations_received=appreciations_received, most_appreciated=most_appreciated)
-    else:
-        return render_template('login.html')
+    return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
+                           like_form=like_form, appreciations_given=appreciations_given,
+                           appreciations_received=appreciations_received, most_appreciated=most_appreciated)
 
 
 @app.route('/profile', defaults={'username': None})
 @app.route('/profile/<username>')
 def profile(username):
-    if current_user.is_authenticated:
+    user = current_user if username is None else User.get_by_username(username)
 
-        user = current_user if username is None else User.get_by_username(username)
+    appreciations_given = Appreciation.count_by_user(user)
+    appreciations_received = Mention.count_by_user(user)
 
-        appreciations_given = Appreciation.count_by_user(user)
-        appreciations_received = Mention.count_by_user(user)
-
-        return render_template('profile.html', user=user, appreciations_given=appreciations_given,
-                               appreciations_received=appreciations_received)
-    else:
-        return render_template('login.html')
+    return render_template('profile.html', user=user, appreciations_given=appreciations_given,
+                           appreciations_received=appreciations_received)
 
 
 @app.route('/1-on-1s', methods=['POST', 'GET'], defaults={'_id': None})
@@ -127,7 +118,7 @@ def get_google_provider_cfg():
 def appreciate():
     form = AppreciationForm(request.form)
     if current_user.is_authenticated and form.validate():
-        appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=int(time.time()))
+        appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=datetime.now())
         Appreciation.create(appreciation)
 
         mentions = re.findall(r'@[a-zA-Z0-9\._]+', form.content.data)
@@ -183,17 +174,18 @@ def dislike():
         return render_template('login.html')
 
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    # Find out what URL to hit for Google login
+    if request.method == 'GET':
+        return render_template('login.html')
+
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    # Use library to construct the request for Google login and provide
-    # scopes that let you retrieve user's profile from Google
+    callback_url = request.base_url + "/callback"
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri=request.base_url + "/callback",
+        redirect_uri=callback_url,
         scope=["openid", "email", "profile"],
     )
     return redirect(request_uri)
@@ -251,8 +243,6 @@ def callback():
             return redirect(url_for("register"))
         # Create a user in your db with the information provided
         # by Google
-
-        # Doesn't exist? Add it to the database.
 
         # Begin user session by logging the user in
         login_user(user)

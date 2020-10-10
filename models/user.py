@@ -15,43 +15,47 @@ class User(UserMixin):
 
     @staticmethod
     def get(user_id):
-        db = get_db()
-        user = db.execute(
-            "SELECT id, name, email, profile_pic, team_name, designation, username FROM user WHERE id = ?", (user_id,)
-        ).fetchone()
-        if not user:
-            return None
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    'SELECT id, name, email, profile_pic, team_name, designation, username FROM "user" WHERE id = %s',
+                    (user_id,)
+                )
+                row = c.fetchone()
+                if not row:
+                    return None
 
-        user = User(
-            id_=user[0], name=user[1], email=user[2], profile_pic=user[3], team_name=user[4], designation=user[5],
-            username=user[6]
-        )
-        return user
+                row = User(
+                    id_=row[0], name=row[1], email=row[2], profile_pic=row[3], team_name=row[4],
+                    designation=row[5],
+                    username=row[6]
+                )
+                return row
 
     @staticmethod
     def create(user):
-        db = get_db()
-        db.execute(
-            "INSERT INTO user (id, name, email, profile_pic, team_name, designation, username) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (user.id, user.name, user.email, user.profile_pic, user.team_name, user.designation, user.username),
-        )
-        db.commit()
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    'INSERT INTO "user" (id, name, email, profile_pic, team_name, designation, username) '
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (user.id, user.name, user.email, user.profile_pic, user.team_name, user.designation, user.username),
+                )
 
     @staticmethod
     def get_by_username(username):
-        db = get_db()
-        user = db.execute(
-            "SELECT id, name, email, profile_pic, team_name, designation, username FROM user WHERE username = ?", (username,)
-        ).fetchone()
-        if not user:
-            return None
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    'SELECT id, name, email, profile_pic, team_name, designation, username'
+                    ' FROM "user" WHERE username = %s', (username,)
+                )
+                row = c.fetchone()
+                if not row:
+                    return None
 
-        user = User(
-            id_=user[0], name=user[1], email=user[2], profile_pic=user[3], team_name=user[4], designation=user[5],
-            username=user[6]
-        )
-        return user
-
-
-
+                user = User(
+                    id_=row[0], name=row[1], email=row[2], profile_pic=row[3], team_name=row[4], designation=row[5],
+                    username=row[6]
+                )
+                return user

@@ -1,17 +1,9 @@
-# http://flask.pocoo.org/docs/1.0/tutorial/database/
-import sqlite3
-
-import click
+import psycopg2
 from flask import g
-from flask.cli import with_appcontext
 
 
 def open_connection():
-    db = sqlite3.connect(
-        "sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
-    )
-    db.row_factory = sqlite3.Row
-
+    db = psycopg2.connect('')
     return db
 
 
@@ -27,7 +19,6 @@ def close_db(e=None):
 
     if db is not None:
         db.close()
-
 
 
 def init_app(app):

@@ -1,1 +1,2 @@
-ALTER TABLE USER ADD COLUMN username text
+ALTER TABLE "user"
+    ADD COLUMN username TEXT;
