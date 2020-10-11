@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import time
 from datetime import datetime
 
 import requests
@@ -16,14 +15,14 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
-from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm
+from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
+    OneOnOneActionItemDone
 # Internal imports
 from models.appreciation import Appreciation
 from models.comment import Comment
 from models.like import Like
 from models.mention import Mention
-from models.one_on_one import OneOnOne
-from models.one_on_one_action_item import OneOnOneActionItem
+from models.one_on_one import OneOnOne, OneOnOneActionItem
 from models.user import User
 
 app = Flask(__name__)
@@ -112,6 +111,18 @@ def one_on_one_action_item():
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
+
+
+@app.route('/1-on-1s/action-items/done', methods=['POST'])
+@login_required
+def one_on_one_action_item_done():
+    form = OneOnOneActionItemDone(request.form)
+    if form.validate():
+        action_item = OneOnOneActionItem.get(form.action_item.data)
+        action_item.state = 1
+        action_item.update()
+
+        return redirect(f'/1-on-1s/{action_item.one_on_one.id}')
 
 
 @app.route('/appreciate', methods=['POST'])

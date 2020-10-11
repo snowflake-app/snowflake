@@ -26,3 +26,7 @@ class OneOnOneForm(Form):
 class OneOnOneActionItemForm(Form):
     content = StringField('Content', [validators.DataRequired()])
     one_on_one = HiddenField('')
+
+
+class OneOnOneActionItemDone(Form):
+    action_item = HiddenField('', [validators.DataRequired()])

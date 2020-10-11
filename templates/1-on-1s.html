@@ -1,4 +1,5 @@
 {% from "_formhelpers.html" import render_field %}
+{% from "_macros.html" import render_schedule %}
 
 {% extends "authenticated.html" %}
 {% block page %}one-on-ones{% endblock %}
@@ -59,23 +60,35 @@
             </figure>
             <div class="media-content">
                 <div class="content">
-                    <h1 class="title">
+                    <div class="block is-flex">
+                    <h1 class="title is-flex-grow-1">
                         {% if current_user.id == one_on_one.created_by.id %}
                         <a>Your 1:1 with {{one_on_one.user.name}}</a>
                         {% else %}
                         <a>{{one_on_one.created_by.name}}'s 1:1 with you</a>
                         {% endif %}
                     </h1>
+                    {{ render_schedule(one_on_one.created_by.name + " 1:1 with " + one_on_one.user.name) }}
+                    </div>
                     <div class="block">
                         <h3>Action items</h3>
                         <ul class="action-items">
                             {% for action_item in one_on_one.get_action_items() %}
                             <li class="block is-flex align-items-center">
-                                <button class="clear-button mr-1">
-                                    <span class="icon">
-                                        <ion-icon size="large" name="checkmark-circle-outline"></ion-icon>
-                                    </span>
-                                </button>
+                                <form method="post" action="/1-on-1s/action-items/done">
+                                    <input type="hidden" name="action_item" value="{{action_item.id}}">
+                                    <button class="clear-button mr-1">
+                                        {% if action_item.state == 0 %}
+                                        <span class="icon">
+                                            <ion-icon size="large" name="checkmark-circle-outline"></ion-icon>
+                                        </span>
+                                        {% else %}
+                                        <span class="icon has-text-success">
+                                            <ion-icon size="large" name="checkmark-circle"></ion-icon>
+                                        </span>
+                                        {% endif %}
+                                    </button>
+                                </form>
                                 <span class="image is-24x24 mx-1">
                                     <img class="is-rounded" src="{{ action_item.created_by.profile_pic }}">
                                 </span>
@@ -110,7 +123,7 @@
             </header>
             <section class="modal-card-body">
                 <div class="field">
-                    <input name="user" type="text" class="input" placeholder="mention someone by their username">
+                    <input pattern="[a-zA-Z0-9\._]+" name="user" type="text" class="input" placeholder="mention someone by their username">
                 </div>
             </section>
             <footer class="modal-card-foot">
