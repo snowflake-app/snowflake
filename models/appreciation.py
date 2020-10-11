@@ -55,6 +55,14 @@ class Appreciation:
                 likes = c.fetchone()[0]
                 return likes
 
+    def get_comment_count(self):
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    'SELECT COUNT(*) FROM comment c where c.appreciation_id = %s', (self.id,))
+                comments = c.fetchone()[0]
+                return comments
+
     def is_liked_by(self, user: User):
         with get_db() as db:
             with db.cursor() as c:

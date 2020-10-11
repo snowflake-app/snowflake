@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  document.querySelectorAll('button[data-toggle]').forEach(button => {
+      const target = document.querySelector(button.dataset.toggle)
+      button.addEventListener('click', evt => {
+        evt.preventDefault()
+        target.classList.toggle("hide")
+      })
+  });
+
   const launchButton = document.getElementById('launch-one-on-one-form');
    if (launchButton) {
     const form = document.getElementById('one-on-one-form')

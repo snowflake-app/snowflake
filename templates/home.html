@@ -86,14 +86,18 @@
                                 </form>
                                 {% endif %}
                                 <button title="Comment"
-                                        class="post-action-button clear-button has-text-info level-item is-clickable">
+                                        class="post-action-button comment-button clear-button has-text-info level-item is-clickable"
+                                        data-toggle="#comments-{{appreciation.id}}">
                                       <span class="icon is-medium">
                                         <ion-icon name="chatbubble-outline"></ion-icon>
+                                      </span>
+                                    <span>
+                                      {{appreciation.get_comment_count()}}
                                       </span>
                                 </button>
                             </div>
                         </nav>
-                        <div class="block">
+                        <div class="block hide is-clipped" id="comments-{{appreciation.id}}">
                             <form method="post" action="/comment">
                                 <input type="hidden" name="appreciation" value="{{appreciation.id}}">
                                 <div class="field is-grouped">
@@ -118,41 +122,43 @@
             </div>
         </div>
         <div class="column is-one-third">
-            <div class="box block">
-                <div class="header pb-0 p-4 has-text-centered">
-                    <figure class="avatar image mb-3 is-128x128">
-                        <img class="is-rounded" src="{{ user.profile_pic }}">
-                    </figure>
-                    <h1 class="is-size-4"><a href="/profile/{{user.username}}">{{user.name}}</a></h1>
-                    <p>{{user.designation}} @ {{user.team_name}}</p>
-                </div>
-                <hr>
-                <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
-                    <div class="is-flex is-flex-direction-column is-align-items-center">
-                        <span class="given-count has-text-weight-bold is-size-4">{{ appreciations_given }}</span>
-                        <span class="is-uppercase">Given</span>
+            <div style="position: sticky; top:4.5rem">
+                <div class="box block">
+                    <div class="header pb-0 p-4 has-text-centered">
+                        <figure class="avatar image mb-3 is-128x128">
+                            <img class="is-rounded" src="{{ user.profile_pic }}">
+                        </figure>
+                        <h1 class="is-size-4"><a href="/profile/{{user.username}}">{{user.name}}</a></h1>
+                        <p>{{user.designation}} @ {{user.team_name}}</p>
                     </div>
-                    <div class="is-flex is-flex-direction-column is-align-items-center">
-                        <span class="received-count has-text-weight-bold is-size-4">{{ appreciations_received }}</span>
-                        <span class="is-uppercase">Received</span>
+                    <hr>
+                    <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
+                        <div class="is-flex is-flex-direction-column is-align-items-center">
+                            <span class="given-count has-text-weight-bold is-size-4">{{ appreciations_given }}</span>
+                            <span class="is-uppercase">Given</span>
+                        </div>
+                        <div class="is-flex is-flex-direction-column is-align-items-center">
+                            <span class="received-count has-text-weight-bold is-size-4">{{ appreciations_received }}</span>
+                            <span class="is-uppercase">Received</span>
+                        </div>
                     </div>
                 </div>
+                <nav class="panel is-primary block">
+                    <p class="panel-heading has-text-centered">
+                        Most appreciated
+                    </p>
+                    {% for entry in most_appreciated %}
+                    <a href="/profile/{{entry.user.username}}" class="panel-block p-3 is-active is-align-items-center">
+                        <figure class="image is-24x24 mr-1">
+                            <img class="is-rounded" src="{{entry.user.profile_pic}}">
+                        </figure>
+                        <span>{{entry.user.name}}</span>
+                        <span class="is-flex-grow-1"></span>
+                        <span class="has-text-weight-bold">{{entry.count}}</span>
+                    </a>
+                    {% endfor %}
+                </nav>
             </div>
-            <nav class="panel is-primary block">
-                <p class="panel-heading has-text-centered">
-                    Most appreciated
-                </p>
-                {% for entry in most_appreciated %}
-                <a href="/profile/{{entry.user.username}}" class="panel-block p-3 is-active is-align-items-center">
-                    <figure class="image is-24x24 mr-1">
-                        <img class="is-rounded" src="{{entry.user.profile_pic}}">
-                    </figure>
-                    <span>{{entry.user.name}}</span>
-                    <span class="is-flex-grow-1"></span>
-                    <span class="has-text-weight-bold">{{entry.count}}</span>
-                </a>
-                {% endfor %}
-            </nav>
         </div>
     </div>
 </div>

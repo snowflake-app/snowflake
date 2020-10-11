@@ -9,7 +9,7 @@
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
 </head>
 
-<body class="{% block page %}{% endblock %}">
+<body class="{% block page %}{% endblock %} has-navbar-fixed-top">
 {% block content %}{% endblock %}
 <script type="text/javascript" src="{{ url_for('static', filename='lib/main.js') }}"></script>
 <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
