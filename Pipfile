@@ -15,6 +15,7 @@ flask-login = "*"
 click = "*"
 flask-wtf = "*"
 psycopg2-binary = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

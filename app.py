@@ -193,7 +193,7 @@ def login():
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    callback_url = request.base_url + "/callback"
+    callback_url = os.getenv('BASE_URL', request.base_url) + "/callback"
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=callback_url,
@@ -215,7 +215,7 @@ def callback():
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
-        redirect_url=request.base_url,
+        redirect_url=os.getenv('BASE_URL', request.base_url) + "/callback",
         code=code
     )
     token_response = requests.post(

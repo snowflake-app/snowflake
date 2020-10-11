@@ -6,12 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Snowflake</title>
-    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
+    <link href="/static/css/main.css" rel="stylesheet" media="screen">
 </head>
 
 <body class="{% block page %}{% endblock %} has-navbar-fixed-top">
 {% block content %}{% endblock %}
-<script type="text/javascript" src="{{ url_for('static', filename='lib/main.js') }}"></script>
+<script type="text/javascript" src="/static/lib/main.js"></script>
+<!--<script type="text/javascript" src="{{ url_for('static', filename='lib/main.js') }}"></script>-->
 <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 </body>
 

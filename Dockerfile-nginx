@@ -1,0 +1,21 @@
+FROM node:latest as static
+
+WORKDIR /app
+
+COPY package*.json /app/
+RUN npm install
+
+COPY .babelrc /app/
+COPY _javascript/ /app/_javascript
+COPY _sass/ /app/_sass
+
+RUN ls -lah
+
+RUN mkdir static && npm run deploy
+
+FROM nginx:latest
+
+RUN mkdir -p /app/static
+
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=static /app/static /app/static

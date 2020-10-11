@@ -1,0 +1,23 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env
+  app:
+    depends_on:
+      - db
+    build: .
+    env_file:
+      - .env
+    environment:
+      - BASE_URL=http://localhost/login
+      - PGHOST=db
+  proxy:
+    depends_on:
+      - app
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    ports:
+      - 80:80
