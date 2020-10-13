@@ -1,10 +1,8 @@
 import json
-import os
 import re
 from datetime import datetime
 
 import requests
-# Third-party libraries
 from flask import Flask, redirect, request, url_for, render_template, session
 from flask_login import (
     LoginManager,
@@ -15,9 +13,9 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
+import settings
 from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
-    OneOnOneActionItemDone
-# Internal imports
+    OneOnOneActionItemStateChange
 from models.appreciation import Appreciation
 from models.comment import Comment
 from models.like import Like
@@ -26,26 +24,15 @@ from models.one_on_one import OneOnOne, OneOnOneActionItem
 from models.user import User
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+app.secret_key = settings.SECRET_KEY
 
-# Configuration
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
-GOOGLE_DISCOVERY_URL = (
-    "https://accounts.google.com/.well-known/openid-configuration"
-)
-
-# User session management setup
-# https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-# OAuth 2 client setup
-client = WebApplicationClient(GOOGLE_CLIENT_ID)
+client = WebApplicationClient(settings.GOOGLE_CLIENT_ID)
 
 
-# Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
@@ -54,15 +41,16 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def index():
-    form = AppreciationForm(request.form)
+    form = AppreciationForm()
     appreciations = Appreciation.get_all()
-    like_form = LikeForm(request.form)
+    like_form = LikeForm()
+    comment_form = CommentForm()
     appreciations_given = Appreciation.count_by_user(current_user)
     appreciations_received = Mention.count_by_user(current_user)
     most_appreciated = Appreciation.most_appreciated()
 
     return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
-                           like_form=like_form, appreciations_given=appreciations_given,
+                           like_form=like_form, comment_form=comment_form, appreciations_given=appreciations_given,
                            appreciations_received=appreciations_received, most_appreciated=most_appreciated)
 
 
@@ -82,23 +70,30 @@ def profile(username):
 @app.route('/1-on-1s/<_id>', methods=['POST', 'GET'])
 @login_required
 def one_on_one(_id):
-    form = OneOnOneForm(request.form)
-    if request.method == 'POST' and form.validate():
+    form = OneOnOneForm()
+    action_item_form = OneOnOneActionItemForm()
+    action_item_state_change_form = OneOnOneActionItemStateChange()
+
+    if form.validate_on_submit():
         user = User.get_by_username(form.user.data)
         o = OneOnOne(user=user, created_by=current_user)
         OneOnOne.create(o)
         return redirect(url_for("one_on_one"))
 
     one_on_ones = OneOnOne.get_by_user(current_user)
-
-    one_on_one = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
-    return render_template('1-on-1s.html', one_on_ones=one_on_ones, form=form, one_on_one=one_on_one)
+    o = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
+    return render_template('1-on-1s.html',
+                           one_on_ones=one_on_ones,
+                           form=form,
+                           action_item_form=action_item_form,
+                           action_item_state_change_form=action_item_state_change_form,
+                           one_on_one=o)
 
 
 @app.route('/1-on-1s/action-items', methods=['POST'])
 @login_required
 def one_on_one_action_item():
-    form = OneOnOneActionItemForm(request.form)
+    form = OneOnOneActionItemForm()
 
     if form.validate():
         o = OneOnOne.get(form.one_on_one.data)
@@ -110,29 +105,32 @@ def one_on_one_action_item():
 
 
 def get_google_provider_cfg():
-    return requests.get(GOOGLE_DISCOVERY_URL).json()
+    return requests.get(settings.GOOGLE_DISCOVERY_URL).json()
 
 
 @app.route('/1-on-1s/action-items/done', methods=['POST'])
 @login_required
 def one_on_one_action_item_done():
-    form = OneOnOneActionItemDone(request.form)
-    if form.validate():
-        action_item = OneOnOneActionItem.get(form.action_item.data)
+    form = OneOnOneActionItemStateChange()
+    if form.validate_on_submit():
+        action_item_data = form.action_item.data
+        action_item = OneOnOneActionItem.get(action_item_data)
         action_item.state = 1
         action_item.update()
 
         return redirect(f'/1-on-1s/{action_item.one_on_one.id}')
 
+    return url_for('one_on_one')
+
 
 @app.route('/appreciate', methods=['POST'])
 def appreciate():
-    form = AppreciationForm(request.form)
-    if current_user.is_authenticated and form.validate():
+    form = AppreciationForm()
+    if form.validate_on_submit():
         appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=datetime.now())
         Appreciation.create(appreciation)
 
-        mentions = re.findall(r'@[a-zA-Z0-9\._]+', form.content.data)
+        mentions = re.findall(r'@[a-zA-Z0-9._]+', form.content.data)
         for mention in mentions:
             user = User.get_by_username(mention[1:])
             if user is None:
@@ -147,12 +145,12 @@ def appreciate():
 
 @app.route('/like', methods=['POST'])
 def like():
-    form = LikeForm(request.form)
+    form = LikeForm()
     if current_user.is_authenticated and form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
-        like = Like(appreciation=appreciation, user=current_user)
-        Like.create(like)
+        l = Like(appreciation=appreciation, user=current_user)
+        Like.create(l)
 
         return redirect(url_for('index'))
     else:
@@ -162,7 +160,7 @@ def like():
 @app.route('/comment', methods=['POST'])
 @login_required
 def comment():
-    form = CommentForm(request.form)
+    form = CommentForm()
     if form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
@@ -174,7 +172,7 @@ def comment():
 
 @app.route('/dislike', methods=['POST'])
 def dislike():
-    form = LikeForm(request.form)
+    form = LikeForm()
     if current_user.is_authenticated and form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
@@ -193,7 +191,7 @@ def login():
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    callback_url = os.getenv('BASE_URL', request.base_url) + "/callback"
+    callback_url = settings.BASE_URL + url_for('callback')
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=callback_url,
@@ -204,25 +202,23 @@ def login():
 
 @app.route("/login/callback")
 def callback():
-    # Get authorization code Google sent back to you
     code = request.args.get("code")
 
-    # things on behalf of a user
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg["token_endpoint"]
 
-    # Prepare and send a request to get tokens! Yay tokens!
+    callback_url = settings.BASE_URL + url_for('callback')
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
-        redirect_url=os.getenv('BASE_URL', request.base_url) + "/callback",
+        redirect_url=callback_url,
         code=code
     )
     token_response = requests.post(
         token_url,
         headers=headers,
         data=body,
-        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+        auth=(settings.GOOGLE_CLIENT_ID, settings.GOOGLE_CLIENT_SECRET),
     )
 
     # Parse the tokens!
@@ -266,7 +262,7 @@ def callback():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm(request.form)
+    form = RegistrationForm()
 
     if request.method == 'POST' and form.validate():
         unique_id = session['unique_id']
@@ -296,7 +292,7 @@ def logout():
 
 @app.template_filter()
 def add_mentions(text: str):
-    mentions = set(re.findall(r'@[a-zA-Z0-9\._]+', text))
+    mentions = set(re.findall(r'@[a-zA-Z0-9._]+', text))
 
     replacement = {}
     for mention in mentions:

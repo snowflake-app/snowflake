@@ -1,6 +1,5 @@
-{% from "_formhelpers.html" import render_field %}
-
 {% extends "authenticated.html" %}
+
 {% block page %}home{% endblock %}
 
 {% block body %}
@@ -9,14 +8,14 @@
     <div class="columns">
         <div class="column is-two-thirds">
             <div class="box">
-                <form class="note-form block" method="post" action="/appreciate">
+                <form class="note-form block" method="post" action="{{ url_for('appreciate') }}">
+                    {{ form.csrf_token }}
                     <div class="field">
                         <label for="note-field" class="is-sr-only">Write a note a @mention to send a note</label>
                         <div class="control">
-                <textarea id="note-field" rows="2" class="textarea"
+                        <textarea id="note-field" rows="2" class="textarea"
                           name="{{form.content.name}}"
                           placeholder="Write a message that includes @mention"></textarea>
-                            <!--                {{ render_field(form.content) }}-->
                         </div>
                     </div>
                     <div class="field mt-2 send-container is-clipped">
@@ -59,7 +58,8 @@
                         <nav class="level is-mobile">
                             <div class="level-left">
                                 {% if appreciation.is_liked_by(user) %}
-                                <form class="level-item" method="post" action="/dislike">
+                                <form class="level-item" method="post" action="{{ url_for('dislike') }}">
+                                    {{ like_form.csrf_token }}
                                     <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
                                     <button title="Like" type="submit"
                                             class="post-action-button clear-button has-text-danger level-item is-clickable">
@@ -72,7 +72,8 @@
                                     </button>
                                 </form>
                                 {% else %}
-                                <form class="level-item" method="post" action="/like">
+                                <form class="level-item" method="post" action="{{ url_for('like') }}">
+                                    {{ like_form.csrf_token }}
                                     <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
                                     <button title="Like" type="submit"
                                             class="post-action-button clear-button has-text-danger level-item is-clickable">
@@ -98,7 +99,8 @@
                             </div>
                         </nav>
                         <div class="block hide is-clipped" id="comments-{{appreciation.id}}">
-                            <form method="post" action="/comment">
+                            <form method="post" action="{{ url_for('comment') }}">
+                                {{ comment_form.csrf_token }}
                                 <input type="hidden" name="appreciation" value="{{appreciation.id}}">
                                 <div class="field is-grouped">
                                     <div class="control is-expanded">

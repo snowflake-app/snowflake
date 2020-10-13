@@ -1,42 +1,34 @@
 {% extends 'base.html' %}
 
+{% from "_formhelpers.html" import render_field %}
+
 {% block page %}welcome centered{% endblock %}
 
 {% block content %}
-<div class="box p-6">
-    <div class="header pb-0 p-4 has-text-centered">
-        <figure class="avatar image mb-3 is-128x128">
-            <img class="is-rounded" src="{{ picture }}">
-        </figure>
-        <h1 class="is-size-4"><a>Hello {{user_name}}</a></h1>
-        <h3 class="subtitle">We need few bits of information before setting up your account</h3>
+    <div class="box p-6">
+        <div class="header pb-0 p-4 has-text-centered">
+            <figure class="avatar image mb-3 is-128x128">
+                <img class="is-rounded" src="{{ picture }}">
+            </figure>
+            <h1 class="is-size-4"><a>Hello {{ user_name }}</a></h1>
+            <h3 class="subtitle">We need few bits of information before setting up your account</h3>
+        </div>
+        <form class="mt-4" method="post">
+            {{ form.csrf_token }}
+            {{ render_field(form.team_name) }}
+            {{ render_field(form.designation) }}
+            <!--    <div class="field">-->
+            <!--      <label for="bio" class="label">Bio</label>-->
+            <!--      <div class="control">-->
+            <!--        <textarea class="textarea" id="bio" rows="5" placeholder="A few lines about yourself"></textarea>-->
+            <!--      </div>-->
+            <!--    </div>-->
+
+            <div class="mt-5 has-text-centered">
+                <p>
+                    <button class="button is-large is-primary" type="submit">Continue</button>
+                </p>
+            </div>
+        </form>
     </div>
-    <form class="mt-4" method="post">
-        <div class="field">
-            <label for="team" class="label">Your team</label>
-            <div class="control">
-                <input id="team" name="team_name" class="input" type="text">
-            </div>
-        </div>
-        <div class="field">
-            <label for="designation" class="label">Designation</label>
-            <div class="control">
-                <input id="designation" name="designation" class="input" type="text">
-            </div>
-        </div>
-
-        <!--    <div class="field">-->
-        <!--      <label for="bio" class="label">Bio</label>-->
-        <!--      <div class="control">-->
-        <!--        <textarea class="textarea" id="bio" rows="5" placeholder="A few lines about yourself"></textarea>-->
-        <!--      </div>-->
-        <!--    </div>-->
-
-        <div class="mt-5 has-text-centered">
-            <p>
-                <button class="button is-large is-primary" type="submit">Continue</button>
-            </p>
-        </div>
-    </form>
-</div>
 {% endblock %}
