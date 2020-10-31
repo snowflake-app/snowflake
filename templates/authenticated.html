@@ -1,86 +1,83 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<header>
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-        <span class="icon has-text-primary is-large">
-          <ion-icon size="large" name="snow-outline"></ion-icon>
-        </span>
-                <span class="title">
-          Snowflake
-        </span>
-            </a>
-            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-               data-target="menu">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
-
-        <div id="menu" class="navbar-menu">
-            <div class="navbar-start">
+    <header>
+        <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <span class="icon has-text-primary is-large">
+                      <ion-icon size="large" name="snow-outline"></ion-icon>
+                    </span>
+                    <span class="title">Snowflake</span>
+                </a>
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+                   data-target="menu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
 
-            <div class="navbar-end">
-                <a href="/" class="navbar-item">
+            <div id="menu" class="navbar-menu">
+                <div class="navbar-start">
+                </div>
+
+                <div class="navbar-end">
+                    <a href="/" class="navbar-item">
                     <span class="icon is-medium">
                         <ion-icon class="is-size-5" name="home-outline"></ion-icon>
                     </span>
-                    <span>Home</span>
-                </a>
-                <a href="/1-on-1s" class="navbar-item">
+                        <span>Home</span>
+                    </a>
+                    <a href="/1-on-1s" class="navbar-item">
                     <span class="icon is-medium">
                         <ion-icon class="is-size-4" name="people-outline"></ion-icon>
                     </span>
-                    <span> 1-on-1s Meeting</span>
-                </a>
-                <a class="navbar-item">
+                        <span> 1-on-1s Meeting</span>
+                    </a>
+                    <a class="navbar-item">
                     <span class="icon is-medium">
                         <ion-icon class="is-size-4" name="rocket-outline"></ion-icon>
                     </span>
-                    <span>Personal Objective</span>
-                </a>
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        Hello {{current_user.name}}
+                        <span>Personal Objective</span>
                     </a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            Hello {{ current_user.name }}
+                        </a>
 
-                    <div class="navbar-dropdown is-right">
-                        <a class="navbar-item" href="/profile">
+                        <div class="navbar-dropdown is-right">
+                            <a class="navbar-item" href="/profile">
                           <span class="icon">
                             <ion-icon size="large" name="person-circle-outline"></ion-icon>
                           </span><span>
                             Profile
                           </span>
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item">
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item">
                           <span class="icon">
                             <ion-icon size="large" name="help-circle-outline"></ion-icon>
                           </span><span>
                             Help
                           </span>
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item" href="/logout">
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="/logout">
                           <span class="icon">
                             <ion-icon size="large" name="exit-outline"></ion-icon>
                           </span><span>
                             Sign out
                           </span>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
-</header>
-<main class="pt-5">
-    {% block body %}
-    {% endblock %}
-</main>
+        </nav>
+    </header>
+    <main class="pt-5">
+        {% block body %}
+        {% endblock %}
+    </main>
 {% endblock %}

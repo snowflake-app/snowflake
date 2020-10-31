@@ -16,6 +16,7 @@ click = "*"
 flask-wtf = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

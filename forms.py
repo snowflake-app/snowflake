@@ -1,32 +1,70 @@
-from wtforms import Form, StringField, validators, TextAreaField, HiddenField
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, HiddenField, Field
+from wtforms.validators import DataRequired, Length, Regexp
 
 
-class RegistrationForm(Form):
-    team_name = StringField('Team Name', [validators.DataRequired(), validators.Length(min=3, max=255)])
-    designation = StringField('Designation', [validators.DataRequired(), validators.Length(min=3, max=255)])
+def infer_html_attrs(field: Field):
+    attrs = {}
+
+    if field.flags.required:
+        attrs['required'] = True
+
+    if field.description:
+        attrs['title'] = field.description
+
+    for validator in field.validators:
+        if isinstance(validator, DataRequired):
+            attrs['required'] = True
+        if isinstance(validator, Length):
+            if validator.min > -1:
+                attrs['minlength'] = validator.min
+
+            if validator.max > -1:
+                attrs['maxlength'] = validator.max
+        if isinstance(validator, Regexp):
+            attrs['pattern'] = validator.regex.pattern
+
+    return attrs
 
 
-class AppreciationForm(Form):
-    content = TextAreaField('Content', [validators.DataRequired(), validators.Length(min=1, max=255)])
+class BaseForm(FlaskForm):
+    class Meta(FlaskForm.Meta):
+        def render_field(self, field: Field, kwargs):
+            attrs = field.render_kw if field.render_kw else {}
+            attrs.update(kwargs)
+
+            html_attrs = infer_html_attrs(field)
+            html_attrs.update(attrs)
+
+            return field.widget(field, **html_attrs)
 
 
-class LikeForm(Form):
-    appreciation = HiddenField('Appreciation', [validators.DataRequired()])
+class RegistrationForm(BaseForm):
+    team_name = StringField('Team name', [DataRequired(), Length(min=3, max=255)])
+    designation = StringField('Designation', [DataRequired(), Length(min=3, max=255)])
 
 
-class CommentForm(Form):
-    content = TextAreaField('Content', [validators.DataRequired(), validators.Length(min=1, max=255)])
-    appreciation = HiddenField('Appreciation', [validators.DataRequired()])
+class AppreciationForm(BaseForm):
+    content = TextAreaField('Content', [DataRequired(), Length(max=255)])
 
 
-class OneOnOneForm(Form):
-    user = StringField('User', [validators.DataRequired()])
+class LikeForm(BaseForm):
+    appreciation = HiddenField('', [DataRequired()])
 
 
-class OneOnOneActionItemForm(Form):
-    content = StringField('Content', [validators.DataRequired()])
+class CommentForm(BaseForm):
+    content = TextAreaField('Content', [DataRequired(), Length(max=255)])
+    appreciation = HiddenField('', [DataRequired()])
+
+
+class OneOnOneForm(BaseForm):
+    user = StringField('User', [DataRequired(), Regexp(r'^[\w\-.]+$')])
+
+
+class OneOnOneActionItemForm(BaseForm):
+    content = StringField('Content', [DataRequired()])
     one_on_one = HiddenField('')
 
 
-class OneOnOneActionItemDone(Form):
-    action_item = HiddenField('', [validators.DataRequired()])
+class OneOnOneActionItemStateChange(BaseForm):
+    action_item = HiddenField('', [DataRequired()])

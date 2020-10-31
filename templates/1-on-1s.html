@@ -1,118 +1,126 @@
-{% from "_formhelpers.html" import render_field %}
+{% extends "authenticated.html" %}
+
+{% from "_formhelpers.html" import render_field, form_control %}
 {% from "_macros.html" import render_schedule %}
 
-{% extends "authenticated.html" %}
 {% block page %}one-on-ones{% endblock %}
 
 {% block body %}
-
-
-<div class="container is-flex">
-    <div class="menu">
-        <p class="menu-label is-flex">
-            <span class="is-flex-grow-1 is-size-6">People</span>
-            <button title="Schedule new" id="launch-one-on-one-form" class="clear-button">
+    <div class="container is-flex">
+        <div class="menu">
+            <p class="menu-label is-flex">
+                <span class="is-flex-grow-1 is-size-6">People</span>
+                <button title="Schedule new" id="launch-one-on-one-form" class="clear-button">
                 <span class="icon is-medium">
                     <ion-icon class="is-size-4" icon="add-circle-outline"></ion-icon>
                 </span>
-            </button>
-        </p>
-        <ul class="menu-list">
-            {% for o in one_on_ones %}
-            <li>
-                <a class="is-flex" href="/1-on-1s/{{o.id}}">
+                </button>
+            </p>
+            <ul class="menu-list">
+                {% for o in one_on_ones %}
+                    <li>
+                        <a class="is-flex" href="/1-on-1s/{{ o.id }}">
+                            <figure class="media-left is-flex">
+                                <div class="participants-avatar image is-48x48">
+                                    <img {{ o.created_by.name }} class="is-rounded"
+                                                                 src="{{ o.created_by.profile_pic }}">
+                                </div>
+                                <div class="participants-avatar image is-48x48">
+                                    <img {{ o.user.name }} class="is-rounded" src="{{ o.user.profile_pic }}">
+                                </div>
+                            </figure>
+                            <div class="content">
+                                {% if current_user.id == o.created_by.id %}
+                                    <h3 class="is-size-5 has-font-weight-bold">
+                                        {{ o.user.name }}
+                                    </h3>
+                                    <p class="help">{{ o.user.designation }}</p>
+                                {% else %}
+                                    <h3 class="is-size-5 has-font-weight-bold">
+                                        {{ o.created_by.name }}
+                                    </h3>
+                                    <p class="help">{{ o.created_by.designation }}</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="container p-6">
+            {% if one_on_one %}
+                <article class="appreciation media">
                     <figure class="media-left is-flex">
                         <div class="participants-avatar image is-48x48">
-                            <img class="is-rounded" src="{{ o.created_by.profile_pic }}">
+                            <img alt="{{ one_on_one.created_by.name }}" class="is-rounded"
+                                 src="{{ one_on_one.created_by.profile_pic }}">
                         </div>
                         <div class="participants-avatar image is-48x48">
-                            <img class="is-rounded" src="{{ o.user.profile_pic }}">
+                            <img alt="{{ one_on_one.user.name }}" class="is-rounded"
+                                 src="{{ one_on_one.user.profile_pic }}">
                         </div>
                     </figure>
-                    <div class="content">
-                        {% if current_user.id == o.created_by.id %}
-                        <h3 class="is-size-5 has-font-weight-bold">
-                            {{o.user.name}}
-                        </h3>
-                        <p class="help">{{o.user.designation}}</p>
-                        {% else %}
-                        <h3 class="is-size-5 has-font-weight-bold">
-                            {{o.created_by.name}}
-                        </h3>
-                        <p class="help">{{o.created_by.designation}}</p>
-                        {% endif %}
-                    </div>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="container p-6">
-        {% if one_on_one %}
-        <article class="appreciation media">
-            <figure class="media-left is-flex">
-                <div class="participants-avatar image is-48x48">
-                    <img class="is-rounded" src="{{ one_on_one.created_by.profile_pic }}">
-                </div>
-                <div class="participants-avatar image is-48x48">
-                    <img class="is-rounded" src="{{ one_on_one.user.profile_pic }}">
-                </div>
-            </figure>
-            <div class="media-content">
-                <div class="content">
-                    <div class="block is-flex">
-                    <h1 class="title is-flex-grow-1">
-                        {% if current_user.id == one_on_one.created_by.id %}
-                        <a>Your 1:1 with {{one_on_one.user.name}}</a>
-                        {% else %}
-                        <a>{{one_on_one.created_by.name}}'s 1:1 with you</a>
-                        {% endif %}
-                    </h1>
-                    {{ render_schedule(one_on_one.created_by.name + " 1:1 with " + one_on_one.user.name) }}
-                    </div>
-                    <div class="block">
-                        <h3>Action items</h3>
-                        <ul class="action-items">
-                            {% for action_item in one_on_one.get_action_items() %}
-                            <li class="block is-flex align-items-center">
-                                <form method="post" action="/1-on-1s/action-items/done">
-                                    <input type="hidden" name="action_item" value="{{action_item.id}}">
-                                    <button class="clear-button mr-1">
-                                        {% if action_item.state == 0 %}
-                                        <span class="icon">
-                                            <ion-icon size="large" name="checkmark-circle-outline"></ion-icon>
-                                        </span>
-                                        {% else %}
-                                        <span class="icon has-text-success">
-                                            <ion-icon size="large" name="checkmark-circle"></ion-icon>
-                                        </span>
-                                        {% endif %}
-                                    </button>
-                                </form>
-                                <span class="image is-24x24 mx-1">
-                                    <img class="is-rounded" src="{{ action_item.created_by.profile_pic }}">
-                                </span>
-                                <a class="mr-1" href="/profile/{{action_item.created_by.username}}">+{{action_item.created_by.name}}</a>
-                                <span>{{action_item.content}}</span>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        <div class="block field">
-                            <form method="post" action="/1-on-1s/action-items" class="control has-icons-left">
-                                <input type="hidden" name="one_on_one" value="{{one_on_one.id}}">
-                                <input type="text" class="input" name="content" placeholder="Add action item">
-                                <span class="icon is-left">
+                    <div class="media-content">
+                        <div class="content">
+                            <div class="block is-flex">
+                                <h1 class="title is-flex-grow-1">
+                                    {% if current_user.id == one_on_one.created_by.id %}
+                                        <a>Your 1:1 with {{ one_on_one.user.name }}</a>
+                                    {% else %}
+                                        <a>{{ one_on_one.created_by.name }}'s 1:1 with you</a>
+                                    {% endif %}
+                                </h1>
+                                {{ render_schedule(one_on_one.created_by.name + " 1:1 with " + one_on_one.user.name) }}
+                            </div>
+                            <div class="block">
+                                <h3>Action items</h3>
+                                <ul class="action-items">
+                                    {% for action_item in one_on_one.get_action_items() %}
+                                        <li class="block is-flex align-items-center">
+                                            <form method="post" action="{{ url_for('one_on_one_action_item_done') }}">
+                                                {{ action_item_state_change_form.csrf_token }}
+                                                {{ render_field(action_item_state_change_form.action_item, value=action_item.id) }}
+                                                <button class="clear-button mr-1 is-clickable">
+                                                    {% if action_item.state == 0 %}
+                                                        <span class="icon">
+                                                        <ion-icon size="large"
+                                                                  name="checkmark-circle-outline"></ion-icon>
+                                                    </span>
+                                                    {% else %}
+                                                        <span class="icon has-text-success">
+                                                        <ion-icon size="large" name="checkmark-circle"></ion-icon>
+                                                    </span>
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+                                            <span class="image is-24x24 mx-1">
+                                                <img alt="{{ action_item.created_by.name }}" class="is-rounded"
+                                                     src="{{ action_item.created_by.profile_pic }}">
+                                            </span>
+                                            <a class="mr-1"
+                                               href="/profile/{{ action_item.created_by.username }}">+{{ action_item.created_by.name }}</a>
+                                            <span>{{ action_item.content }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <form method="post" action="{{ url_for('one_on_one_action_item') }}"
+                                      class="block field">
+                                    <div class="control has-icons-left">
+                                        {{ action_item_form.csrf_token }}
+                                        {{ render_field(action_item_form.one_on_one, value=one_on_one.id) }}
+                                        {{ form_control(action_item_form.content) }}
+                                        <span class="icon is-left">
                                         <ion-icon name="add-circle-outline"></ion-icon>
-                                </span>
-                            </form>
+                                    </span>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </article>
-        {% endif %}
+                </article>
+            {% endif %}
+        </div>
     </div>
-
 
     <form method="post" class="modal" id="one-on-one-form">
         <div class="modal-background"></div>
@@ -122,9 +130,8 @@
                 <button type="reset" class="delete" data-action="close"></button>
             </header>
             <section class="modal-card-body">
-                <div class="field">
-                    <input pattern="[a-zA-Z0-9\._]+" name="user" type="text" class="input" placeholder="mention someone by their username">
-                </div>
+                {{ form.csrf_token }}
+                {{ render_field(form.user, label=False, placeholder="mention someone by their username") }}
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-success" type="submit">Save</button>
@@ -132,4 +139,4 @@
             </footer>
         </div>
     </form>
-    {% endblock %}
+{% endblock %}
