@@ -13,6 +13,7 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
+import filters
 import settings
 from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
     OneOnOneActionItemStateChange
@@ -308,6 +309,9 @@ def add_mentions(text: str):
 
     return Markup(text)
 
+
+app.add_template_filter(filters.humanize_time)
+app.add_template_filter(filters.iso_time)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

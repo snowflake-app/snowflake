@@ -1,5 +1,5 @@
 {
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "deprecated": false,
   "description": "Start package for Bulma",
   "devDependencies": {
