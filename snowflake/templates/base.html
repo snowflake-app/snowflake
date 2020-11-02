@@ -5,12 +5,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ entrypoint('app.css') }}">
     <title>Snowflake</title>
 </head>
 
 <body class="{% block page %}{% endblock %} has-navbar-fixed-top">
 {% block content %}{% endblock %}
-<script type="text/javascript" src="{{ entrypoint('main.js') }}"></script>
+<script type="text/javascript" src="{{ entrypoint('app.js') }}"></script>
 <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 </body>
 
