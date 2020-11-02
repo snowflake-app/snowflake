@@ -32,7 +32,7 @@ def load_user(user_id):
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
 app.register_blueprint(login.blueprint, url_prefix="/login")
 app.register_blueprint(register.blueprint, url_prefix="/register")
-app.register_blueprint(profile.blueprint, url_prefox="/profile")
+app.register_blueprint(profile.blueprint, url_prefix="/profile")
 
 
 @app.route("/")
