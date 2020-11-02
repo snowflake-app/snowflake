@@ -11,7 +11,7 @@ from flask_login import (
 from markupsafe import Markup
 
 from . import api, filters, settings
-from .controllers import login, register
+from .controllers import login, register, profile
 from .forms import AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
     OneOnOneActionItemStateChange
 from .models import Appreciation, Comment, Like, Mention, OneOnOne, OneOnOneActionItem, User
@@ -32,6 +32,7 @@ def load_user(user_id):
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
 app.register_blueprint(login.blueprint, url_prefix="/login")
 app.register_blueprint(register.blueprint, url_prefix="/register")
+app.register_blueprint(profile.blueprint, url_prefox="/profile")
 
 
 @app.route("/")
@@ -48,18 +49,6 @@ def index():
     return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
                            like_form=like_form, comment_form=comment_form, appreciations_given=appreciations_given,
                            appreciations_received=appreciations_received, most_appreciated=most_appreciated)
-
-
-@app.route('/profile', defaults={'username': None})
-@app.route('/profile/<username>')
-def profile(username):
-    user = current_user if username is None else User.get_by_username(username)
-
-    appreciations_given = Appreciation.count_by_user(user)
-    appreciations_received = Mention.count_by_user(user)
-
-    return render_template('profile.html', user=user, appreciations_given=appreciations_given,
-                           appreciations_received=appreciations_received)
 
 
 @app.route('/1-on-1s', methods=['POST', 'GET'], defaults={'_id': None})
