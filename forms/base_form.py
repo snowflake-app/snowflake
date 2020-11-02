@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, HiddenField, Field
+from wtforms import Field
 from wtforms.validators import DataRequired, Length, Regexp
 
 
@@ -39,32 +39,3 @@ class BaseForm(FlaskForm):
             return field.widget(field, **html_attrs)
 
 
-class RegistrationForm(BaseForm):
-    team_name = StringField('Team name', [DataRequired(), Length(min=3, max=255)])
-    designation = StringField('Designation', [DataRequired(), Length(min=3, max=255)])
-
-
-class AppreciationForm(BaseForm):
-    content = TextAreaField('Content', [DataRequired(), Length(max=255)])
-
-
-class LikeForm(BaseForm):
-    appreciation = HiddenField('', [DataRequired()])
-
-
-class CommentForm(BaseForm):
-    content = TextAreaField('Content', [DataRequired(), Length(max=255)])
-    appreciation = HiddenField('', [DataRequired()])
-
-
-class OneOnOneForm(BaseForm):
-    user = StringField('User', [DataRequired(), Regexp(r'^[\w\-.]+$')])
-
-
-class OneOnOneActionItemForm(BaseForm):
-    content = StringField('Content', [DataRequired()])
-    one_on_one = HiddenField('')
-
-
-class OneOnOneActionItemStateChange(BaseForm):
-    action_item = HiddenField('', [DataRequired()])
