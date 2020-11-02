@@ -2,18 +2,17 @@ import json
 import re
 from datetime import datetime
 
-from flask import Flask, redirect, request, url_for, render_template, session
+from flask import Flask, redirect, url_for, render_template
 from flask_login import (
     LoginManager,
     current_user,
-    login_user,
     logout_user,
     login_required)
 from markupsafe import Markup
 
 from . import api, filters, settings
-from .controllers import login
-from .forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
+from .controllers import login, register
+from .forms import AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
     OneOnOneActionItemStateChange
 from .models import Appreciation, Comment, Like, Mention, OneOnOne, OneOnOneActionItem, User
 
@@ -31,8 +30,8 @@ def load_user(user_id):
 
 
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
-
 app.register_blueprint(login.blueprint, url_prefix="/login")
+app.register_blueprint(register.blueprint, url_prefix="/register")
 
 
 @app.route("/")
@@ -174,29 +173,6 @@ def dislike():
         return redirect(url_for('index'))
     else:
         return render_template('login.html')
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-
-    if request.method == 'POST' and form.validate():
-        unique_id = session['unique_id']
-        users_email = session['users_email']
-        picture = session['picture']
-        full_name = session['users_name']
-        username = users_email.split("@")[0]
-
-        user = User(id_=unique_id, email=users_email, name=full_name, profile_pic=picture,
-                    team_name=form.team_name.data, designation=form.designation.data, username=username)
-
-        User.create(user)
-
-        login_user(user)
-
-        return redirect(url_for('index'))
-
-    return render_template('welcome.html', form=form, user_name=session['users_name'], picture=session['picture'])
 
 
 @app.route("/logout")

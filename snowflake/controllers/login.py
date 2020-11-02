@@ -77,7 +77,7 @@ def callback():
             session['users_email'] = users_email
             session['picture'] = picture
             session['users_name'] = users_name
-            return redirect(url_for("register"))
+            return redirect(url_for("register.register"))
         # Create a user in your db with the information provided
         # by Google
 
