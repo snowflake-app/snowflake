@@ -18,7 +18,7 @@ from .forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, On
     OneOnOneActionItemStateChange
 from .models import Appreciation, Comment, Like, Mention, OneOnOne, OneOnOneActionItem, User
 
-app = Flask(__name__, static_folder="../static")
+app = Flask(__name__)
 app.secret_key = settings.SECRET_KEY
 
 login_manager = LoginManager()

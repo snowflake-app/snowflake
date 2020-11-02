@@ -260,5 +260,5 @@ cython_debug/
 .idea
 sqlite_db
 
-static/assets/
+snowflake/static/assets/
 

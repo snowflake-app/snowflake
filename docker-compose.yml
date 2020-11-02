@@ -6,16 +6,3 @@ services:
       - .env
     ports:
       - 5432:5432
-  app:
-    depends_on:
-      - db
-    build: .
-    env_file:
-      - .env
-    environment:
-      - PGHOST=db
-    ports:
-      - 5000:5000
-    volumes:
-      - .:/app
-    command: 'python -m snowflake'

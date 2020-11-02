@@ -3,15 +3,13 @@ const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 
 const Manifest = require('webpack-manifest-plugin');
 
-const isDev = process.env.NODE_ENV !== 'production';
-
 module.exports = {
     "entry": {
-        "main": "./_frontend/index.js"
+        "main": path.resolve(__dirname, "_frontend/index.js")
     },
     "output": {
         "filename": "[name]-[chunkhash].js",
-        "path": path.resolve(__dirname, "static/assets"),
+        "path": path.resolve(__dirname, "snowflake/static/assets"),
     },
     "module": {
         "rules": [
@@ -45,6 +43,6 @@ module.exports = {
         new Manifest({writeToFileEmit: true})
     ],
     devServer: {
-        contentBase: path.resolve(__dirname, "static/assets"),
+        contentBase: path.resolve(__dirname, "snowflake/static/assets"),
     },
 };

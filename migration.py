@@ -3,7 +3,7 @@ import datetime
 import os
 from dataclasses import dataclass
 
-from db import open_connection
+from snowflake.db import open_connection
 
 
 @dataclass

@@ -134,4 +134,4 @@ dmypy.json
 sqlite_db
 
 node_modules/
-static/assets/
+snowflake/static/assets/
