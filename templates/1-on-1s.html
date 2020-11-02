@@ -108,7 +108,7 @@
                                     <div class="control has-icons-left">
                                         {{ action_item_form.csrf_token }}
                                         {{ render_field(action_item_form.one_on_one, value=one_on_one.id) }}
-                                        {{ form_control(action_item_form.content) }}
+                                        {{ form_control(action_item_form.content, data_has_mentions="") }}
                                         <span class="icon is-left">
                                         <ion-icon name="add-circle-outline"></ion-icon>
                                     </span>
@@ -131,7 +131,7 @@
             </header>
             <section class="modal-card-body">
                 {{ form.csrf_token }}
-                {{ render_field(form.user, label=False, placeholder="mention someone by their username") }}
+                {{ render_field(form.user, label=False, placeholder="mention someone by their username", data_has_mentions="") }}
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-success" type="submit">Save</button>

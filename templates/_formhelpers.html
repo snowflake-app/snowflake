@@ -22,7 +22,7 @@
     {% set css_class = 'input ' + marker + ' ' + kwargs.pop('class', '') %}
     {{ field(class=css_class, **kwargs) }}
     {% if field.errors %}
-        {% for error in field.errors %}
+        {% for errorHandler in field.errors %}
             <p class="help">{{ error | e }}</p>
         {% endfor %}
     {% endif %}

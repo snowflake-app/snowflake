@@ -1,6 +1,13 @@
-import "./main.scss";
+import "regenerator-runtime/runtime";
 
-document.addEventListener('DOMContentLoaded', () => {
+import "./main.scss";
+import {setupToggles} from "./toggle";
+import {setupAutocomplete} from "./mentions";
+import {bindLaunchButton} from "./one-on-one";
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    setupToggles();
     const noteField = document.getElementById('note-field');
 
     if (noteField) {
@@ -10,29 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    document.querySelectorAll('button[data-toggle]').forEach(button => {
-        const target = document.querySelector(button.dataset.toggle)
-        button.addEventListener('click', evt => {
-            evt.preventDefault()
-            target.classList.toggle("hide")
-        })
-    });
-
     const launchButton = document.getElementById('launch-one-on-one-form');
     if (launchButton) {
-        const form = document.getElementById('one-on-one-form')
-
-        form.querySelectorAll('button[data-action="close"]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault()
-                console.log("Closing form")
-                form.classList.remove('is-active');
-                form.reset()
-            })
-        })
-
-        launchButton.addEventListener('click', () => {
-            form.classList.add('is-active');
-        })
+        bindLaunchButton(launchButton)
     }
+
+    setupAutocomplete();
 });

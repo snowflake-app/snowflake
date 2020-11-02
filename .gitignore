@@ -134,5 +134,4 @@ dmypy.json
 sqlite_db
 
 node_modules/
-static/css/
-static/js/
+static/assets/
