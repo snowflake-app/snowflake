@@ -17,6 +17,7 @@ flask-wtf = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 python-dotenv = "*"
+markupsafe = "*"
 
 [requires]
 python_version = "3.8"
