@@ -37,5 +37,3 @@ class BaseForm(FlaskForm):
             html_attrs.update(attrs)
 
             return field.widget(field, **html_attrs)
-
-

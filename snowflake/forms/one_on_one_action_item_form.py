@@ -1,7 +1,7 @@
 from wtforms import StringField, HiddenField
 from wtforms.validators import DataRequired
 
-from forms.base_form import BaseForm
+from .base_form import BaseForm
 
 
 class OneOnOneActionItemForm(BaseForm):

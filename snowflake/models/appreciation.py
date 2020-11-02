@@ -1,7 +1,7 @@
-from db import get_db
-from models.comment import Comment
-from models.mention import Mention
-from models.user import User
+from .comment import Comment
+from .mention import Mention
+from .user import User
+from ..db import get_db
 
 
 class Appreciation:

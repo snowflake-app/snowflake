@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from db import get_db
-from models.user import User
+from ..db import get_db
+from .user import User
 
 
 class OneOnOne:

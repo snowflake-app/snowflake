@@ -13,19 +13,12 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
-import api
-import filters
-import settings
-from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
+from . import api, filters, settings
+from .forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
     OneOnOneActionItemStateChange
-from models.appreciation import Appreciation
-from models.comment import Comment
-from models.like import Like
-from models.mention import Mention
-from models.one_on_one import OneOnOne, OneOnOneActionItem
-from models.user import User
+from .models import Appreciation, Comment, Like, Mention, OneOnOne, OneOnOneActionItem, User
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../static")
 app.secret_key = settings.SECRET_KEY
 
 login_manager = LoginManager()
@@ -333,7 +326,3 @@ def setup():
     return {
         'entrypoint': entrypoint
     }
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')

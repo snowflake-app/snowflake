@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
-from models.user import User
 from .response import bad_request
+from ..models import User
 
 blueprint = Blueprint('users', __name__)
 
