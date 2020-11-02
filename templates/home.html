@@ -13,7 +13,7 @@
                     <div class="field">
                         <label for="note-field" class="is-sr-only">Write a note a @mention to send a note</label>
                         <div class="control">
-                        <textarea id="note-field" rows="2" class="textarea"
+                        <textarea id="note-field" rows="2" class="textarea" data-has-mentions
                           name="{{form.content.name}}"
                           placeholder="Write a message that includes @mention"></textarea>
                         </div>
@@ -106,7 +106,7 @@
                                 <input type="hidden" name="appreciation" value="{{appreciation.id}}">
                                 <div class="field is-grouped">
                                     <div class="control is-expanded">
-                                        <textarea name="content" rows="2" class="textarea"></textarea>
+                                        <textarea data-has-mentions name="content" rows="2" class="textarea"></textarea>
                                     </div>
                                     <div class="control">
                                         <button class="button is-primary" type="submit">Comment</button>

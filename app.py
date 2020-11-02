@@ -13,6 +13,7 @@ from flask_login import (
 from markupsafe import Markup
 from oauthlib.oauth2 import WebApplicationClient
 
+import api
 import filters
 import settings
 from forms import RegistrationForm, AppreciationForm, LikeForm, CommentForm, OneOnOneForm, OneOnOneActionItemForm, \
@@ -37,6 +38,9 @@ client = WebApplicationClient(settings.GOOGLE_CLIENT_ID)
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
+
+
+app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
 
 
 @app.route("/")

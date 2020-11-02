@@ -21,16 +21,18 @@ class User(UserMixin):
                     'SELECT id, name, email, profile_pic, team_name, designation, username FROM "user" WHERE id = %s',
                     (user_id,)
                 )
-                row = c.fetchone()
-                if not row:
-                    return None
+                return User.__bind_user(c.fetchone())
 
-                row = User(
-                    id_=row[0], name=row[1], email=row[2], profile_pic=row[3], team_name=row[4],
-                    designation=row[5],
-                    username=row[6]
-                )
-                return row
+    @staticmethod
+    def __bind_user(row):
+        if not row:
+            return None
+
+        return User(
+            id_=row[0], name=row[1], email=row[2], profile_pic=row[3], team_name=row[4],
+            designation=row[5],
+            username=row[6]
+        )
 
     @staticmethod
     def create(user):
@@ -50,12 +52,15 @@ class User(UserMixin):
                     'SELECT id, name, email, profile_pic, team_name, designation, username'
                     ' FROM "user" WHERE username = %s', (username,)
                 )
-                row = c.fetchone()
-                if not row:
-                    return None
+                return User.__bind_user(c.fetchone())
 
-                user = User(
-                    id_=row[0], name=row[1], email=row[2], profile_pic=row[3], team_name=row[4], designation=row[5],
-                    username=row[6]
+    @classmethod
+    def find_by_name_prefix(cls, term):
+        with get_db() as db:
+            with db.cursor() as c:
+                c.execute(
+                    'SELECT id, name, email, profile_pic, team_name, designation, username'
+                    ' FROM "user" WHERE username LIKE %s', (term + '%',)
                 )
-                return user
+
+                return [User.__bind_user(row) for row in c.fetchall()]

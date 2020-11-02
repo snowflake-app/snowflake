@@ -3,6 +3,8 @@ const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 
 const Manifest = require('webpack-manifest-plugin');
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 module.exports = {
     "entry": {
         "main": "./_frontend/index.js"
@@ -16,7 +18,6 @@ module.exports = {
             {
                 "test": /\.jsx?$/,
                 "use": "babel-loader",
-                exclude: /node_modules\/(?!tributejs)/
             },
             {
                 "test": /\.js$/,
