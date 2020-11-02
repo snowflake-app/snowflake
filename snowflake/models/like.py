@@ -1,6 +1,6 @@
-from db import get_db
-from models.appreciation import Appreciation
-from models.user import User
+from ..db import get_db
+from .appreciation import Appreciation
+from .user import User
 
 
 class Like:

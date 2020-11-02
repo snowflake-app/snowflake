@@ -1,7 +1,7 @@
 from wtforms import StringField
 from wtforms.validators import DataRequired, Regexp
 
-from forms.base_form import BaseForm
+from .base_form import BaseForm
 
 
 class OneOnOneForm(BaseForm):
