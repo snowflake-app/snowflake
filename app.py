@@ -313,5 +313,23 @@ def add_mentions(text: str):
 app.add_template_filter(filters.humanize_time)
 app.add_template_filter(filters.iso_time)
 
+
+@app.context_processor
+def setup():
+    def entrypoint(file: str):
+        with open(app.static_folder + "/assets/manifest.json") as f:
+            manifest = json.load(f)
+            chunk = manifest[file]
+
+            if app.debug:
+                return 'http://localhost:8080/' + chunk
+            else:
+                return url_for('static', filename='assets/' + chunk)
+
+    return {
+        'entrypoint': entrypoint
+    }
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

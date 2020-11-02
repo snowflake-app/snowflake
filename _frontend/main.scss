@@ -1,12 +1,12 @@
 @charset "utf-8";
 
-@import "../node_modules/bulma/sass/utilities/initial-variables";
+@import "~bulma/sass/utilities/initial-variables";
 
 $orange: #e96125;
 $primary: $orange;
 $link: $orange;
 
-@import "../node_modules/bulma/bulma";
+@import "~bulma/bulma";
 
 html {
   width: 100%;
@@ -82,5 +82,5 @@ body {
 }
 
 .hide {
-  height:0;
+  height: 0;
 }
