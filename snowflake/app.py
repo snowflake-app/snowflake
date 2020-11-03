@@ -1,10 +1,8 @@
 import json
-import re
 
 from flask import Flask, url_for
 from flask_login import (
     LoginManager)
-from markupsafe import Markup
 
 from . import api, filters, settings
 from .controllers import login, register, profile, index, one_on_one, appreciation, logout
@@ -32,28 +30,9 @@ app.register_blueprint(one_on_one.blueprint, url_prefix="/1-on-1s")
 app.register_blueprint(appreciation.blueprint)
 app.register_blueprint(logout.blueprint, url_prefix="/logout")
 
-
-@app.template_filter()
-def add_mentions(text: str):
-    mentions = set(re.findall(r'@[a-zA-Z0-9._]+', text))
-
-    replacement = {}
-    for mention in mentions:
-        username = mention[1:]
-        user = User.get_by_username(username)
-        if user is None:
-            continue
-
-        replacement[mention] = f'<a href="/profile/{username}">{mention}</a>'
-
-    for k, v in replacement.items():
-        text = text.replace(k, v)
-
-    return Markup(text)
-
-
 app.add_template_filter(filters.humanize_time)
 app.add_template_filter(filters.iso_time)
+app.add_template_filter(filters.add_mentions)
 
 
 @app.context_processor
