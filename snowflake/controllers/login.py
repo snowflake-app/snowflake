@@ -85,6 +85,6 @@ def callback():
         login_user(user)
 
         # Send user back to homepage
-        return redirect(url_for("index"))
+        return redirect(url_for("index.index"))
     else:
         return "User email not available or not verified by Google.", 400

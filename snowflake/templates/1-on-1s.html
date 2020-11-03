@@ -77,7 +77,7 @@
                                 <ul class="action-items">
                                     {% for action_item in one_on_one.get_action_items() %}
                                         <li class="block is-flex align-items-center">
-                                            <form method="post" action="{{ url_for('one_on_one_action_item_done') }}">
+                                            <form method="post" action="{{ url_for('one_on_one.one_on_one_action_item_done') }}">
                                                 {{ action_item_state_change_form.csrf_token }}
                                                 {{ render_field(action_item_state_change_form.action_item, value=action_item.id) }}
                                                 <button class="clear-button mr-1 is-clickable">
@@ -103,7 +103,7 @@
                                         </li>
                                     {% endfor %}
                                 </ul>
-                                <form method="post" action="{{ url_for('one_on_one_action_item') }}"
+                                <form method="post" action="{{ url_for('one_on_one.one_on_one_action_item') }}"
                                       class="block field">
                                     <div class="control has-icons-left">
                                         {{ action_item_form.csrf_token }}
