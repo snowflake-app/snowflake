@@ -1,14 +1,18 @@
 import json
 
+from dotenv import load_dotenv
 from flask import Flask, url_for
 from flask_login import LoginManager
 
-from . import filters, settings
+from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout
 from .models import User
 
+load_dotenv()
+logger.setup()
+
 app = Flask(__name__)
-app.secret_key = settings.SECRET_KEY
+settings.load(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
