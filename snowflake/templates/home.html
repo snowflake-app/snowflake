@@ -8,7 +8,7 @@
     <div class="columns">
         <div class="column is-two-thirds">
             <div class="box">
-                <form class="note-form block" method="post" action="{{ url_for('appreciate') }}">
+                <form class="note-form block" method="post" action="{{ url_for('appreciation.appreciate') }}">
                     {{ form.csrf_token }}
                     <div class="field">
                         <label for="note-field" class="is-sr-only">Write a note a @mention to send a note</label>
@@ -60,7 +60,7 @@
                         <nav class="level is-mobile">
                             <div class="level-left">
                                 {% if appreciation.is_liked_by(user) %}
-                                <form class="level-item" method="post" action="{{ url_for('dislike') }}">
+                                <form class="level-item" method="post" action="{{ url_for('appreciation.dislike') }}">
                                     {{ like_form.csrf_token }}
                                     <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
                                     <button title="Like" type="submit"
@@ -74,7 +74,7 @@
                                     </button>
                                 </form>
                                 {% else %}
-                                <form class="level-item" method="post" action="{{ url_for('like') }}">
+                                <form class="level-item" method="post" action="{{ url_for('appreciation.like') }}">
                                     {{ like_form.csrf_token }}
                                     <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
                                     <button title="Like" type="submit"
@@ -101,7 +101,7 @@
                             </div>
                         </nav>
                         <div class="block hide is-clipped" id="comments-{{appreciation.id}}">
-                            <form method="post" action="{{ url_for('comment') }}">
+                            <form method="post" action="{{ url_for('appreciation.comment') }}">
                                 {{ comment_form.csrf_token }}
                                 <input type="hidden" name="appreciation" value="{{appreciation.id}}">
                                 <div class="field is-grouped">
