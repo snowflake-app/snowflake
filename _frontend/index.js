@@ -1,6 +1,7 @@
+import "./styles/index.scss";
+
 import "regenerator-runtime/runtime";
 
-import "./main.scss";
 import {setupToggles} from "./toggle";
 import {setupAutocomplete} from "./mentions";
 import {bindLaunchButton} from "./one-on-one";
