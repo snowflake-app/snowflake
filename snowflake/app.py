@@ -1,11 +1,10 @@
 import json
 
 from flask import Flask, url_for
-from flask_login import (
-    LoginManager)
+from flask_login import LoginManager
 
-from . import api, filters, settings
-from .controllers import login, register, profile, index, one_on_one, appreciation, logout
+from . import filters, settings
+from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout
 from .models import User
 
 app = Flask(__name__)
