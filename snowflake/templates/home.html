@@ -36,12 +36,16 @@
                 <article class="appreciation media">
                     <figure class="media-left is-flex">
                         <div class="participants-avatar image is-48x48">
-                            <img class="is-rounded" src="{{ appreciation.creator.profile_pic }}">
+                            <img alt="Profile picture of {{ appreciation.creator.name }}"
+                                 title="{{ appreciation.creator.name }}"
+                                 class="is-rounded" src="{{ appreciation.creator.profile_pic }}">
                         </div>
                         <div class="participants-avatar image is-48x48">
                             {% set mentions = appreciation.get_mentions() %}
                             {% if mentions %}
-                            <img class="is-rounded" src="{{ mentions[0].user.profile_pic }}">
+                            <img alt="Profile picture of {{ mentions[0].user.name }}"
+                                 title="{{ mentions[0].user.name }}"
+                                 class="is-rounded" src="{{ mentions[0].user.profile_pic }}">
                             {% endif %}
                         </div>
                     </figure>
@@ -105,8 +109,9 @@
                                 {{ comment_form.csrf_token }}
                                 <input type="hidden" name="appreciation" value="{{appreciation.id}}">
                                 <div class="field is-grouped">
+                                    <label class="is-sr-only" for="comment-content-{{ appreciation.id }}">Write a comment</label>
                                     <div class="control is-expanded">
-                                        <textarea data-has-mentions name="content" rows="2" class="textarea"></textarea>
+                                        <textarea id="comment-content-{{ appreciation.id }}" data-has-mentions name="content" rows="2" class="textarea"></textarea>
                                     </div>
                                     <div class="control">
                                         <button class="button is-primary" type="submit">Comment</button>
@@ -135,7 +140,8 @@
                 <div class="box block">
                     <div class="header pb-0 p-4 has-text-centered">
                         <figure class="avatar image mb-3 is-128x128">
-                            <img class="is-rounded" src="{{ user.profile_pic }}">
+                            <img alt="Profile picture of {{ user.name }}"
+                                 title="{{ user.name }}" class="is-rounded" src="{{ user.profile_pic }}">
                         </figure>
                         <h1 class="is-size-4"><a href="/profile/{{user.username}}">{{user.name}}</a></h1>
                         <p>{{user.designation}} @ {{user.team_name}}</p>
@@ -159,7 +165,8 @@
                     {% for entry in most_appreciated %}
                     <a href="/profile/{{entry.user.username}}" class="panel-block p-3 is-active is-align-items-center">
                         <figure class="image is-24x24 mr-1">
-                            <img class="is-rounded" src="{{entry.user.profile_pic}}">
+                            <img alt="Profile picture of {{ entry.user.name }}"
+                                 title="{{ entry.user.name }}" class="is-rounded" src="{{entry.user.profile_pic}}">
                         </figure>
                         <span>{{entry.user.name}}</span>
                         <span class="is-flex-grow-1"></span>

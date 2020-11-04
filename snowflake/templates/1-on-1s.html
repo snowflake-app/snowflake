@@ -22,11 +22,14 @@
                         <a class="is-flex" href="/1-on-1s/{{ o.id }}">
                             <figure class="media-left is-flex">
                                 <div class="participants-avatar image is-48x48">
-                                    <img {{ o.created_by.name }} class="is-rounded"
-                                                                 src="{{ o.created_by.profile_pic }}">
+                                    <img alt="Profile picture of {{ o.created_by.name }}"
+                                         title="{{ o.created_by.name }}"
+                                         class="is-rounded" src="{{ o.created_by.profile_pic }}">
                                 </div>
                                 <div class="participants-avatar image is-48x48">
-                                    <img {{ o.user.name }} class="is-rounded" src="{{ o.user.profile_pic }}">
+                                    <img alt="Profile picture of {{ o.user.name }}"
+                                         title="{{ o.user.name }}"
+                                         class="is-rounded" src="{{ o.user.profile_pic }}">
                                 </div>
                             </figure>
                             <div class="content">
