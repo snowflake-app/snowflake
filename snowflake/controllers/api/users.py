@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from .response import bad_request
-from ..models import User
+from snowflake.models import User
 
 blueprint = Blueprint('users', __name__)
 
