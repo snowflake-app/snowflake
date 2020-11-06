@@ -1,16 +1,13 @@
 import json
 
 import requests
-from flask import Blueprint, request, url_for, session, redirect, render_template
+from flask import Blueprint, request, url_for, session, redirect, render_template, current_app
 from flask_login import login_user
 from oauthlib.oauth2 import WebApplicationClient
 
-from snowflake import settings
 from snowflake.models import User
 
 blueprint = Blueprint('login', __name__)
-
-client = WebApplicationClient(settings.GOOGLE_CLIENT_ID)
 
 
 @blueprint.route("/", methods=['GET', 'POST'])
@@ -18,10 +15,12 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
 
-    google_provider_cfg = settings.get_google_provider_cfg()
+    google_provider_cfg = current_app.config['GOOGLE_PROVIDER_CONFIG']
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    callback_url = settings.BASE_URL + url_for('login.callback')
+    callback_url = current_app.config['BASE_URL'] + url_for('login.callback')
+    client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=callback_url,
@@ -34,10 +33,12 @@ def login():
 def callback():
     code = request.args.get("code")
 
-    google_provider_cfg = settings.get_google_provider_cfg()
+    google_provider_cfg = current_app.config['GOOGLE_PROVIDER_CONFIG']
     token_endpoint = google_provider_cfg["token_endpoint"]
 
-    callback_url = settings.BASE_URL + url_for('login.callback')
+    callback_url = current_app.config['BASE_URL'] + url_for('login.callback')
+    client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
@@ -48,7 +49,7 @@ def callback():
         token_url,
         headers=headers,
         data=body,
-        auth=(settings.GOOGLE_CLIENT_ID, settings.GOOGLE_CLIENT_SECRET),
+        auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),
     )
 
     # Parse the tokens!
