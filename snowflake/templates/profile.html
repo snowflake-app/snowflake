@@ -5,60 +5,58 @@
 {% block page %}profile{% endblock %}
 
 {% block body %}
-
-
-<div class="container">
-    <div class="box block">
-        <div class="header pb-0 p-4 has-text-centered">
-            <figure class="avatar image mb-3 is-128x128">
-                <img class="is-rounded" src="{{ user.profile_pic }}">
-            </figure>
-            <h1 class="is-size-4"><a>{{user.name}}</a></h1>
-            <p>{{user.designation}} @ {{user.team_name}}</p>
-        </div>
-        <hr>
-        <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
-            <div class="is-flex is-flex-direction-column is-align-items-center">
-                <span class="given-count has-text-weight-bold is-size-4">{{ appreciations_given }}</span>
-                <span class="is-uppercase">Given</span>
+    <div class="container">
+        <div class="box block">
+            <div class="header pb-0 p-4 has-text-centered">
+                <figure class="avatar image mb-3 is-128x128">
+                    <img alt="Profile picture of {{ user.name }}"
+                         title="{{ user.name }}" class="is-rounded" src="{{ user.profile_pic }}">
+                </figure>
+                <h1 class="is-size-4"><a>{{ user.name }}</a></h1>
+                <p>{{ user.designation }} @ {{ user.team_name }}</p>
             </div>
-            <div class="is-flex is-flex-direction-column is-align-items-center">
-                <span class="received-count has-text-weight-bold is-size-4">{{ appreciations_received }}</span>
-                <span class="is-uppercase">Received</span>
+            <hr>
+            <div class="block summary pt-0 p-4 is-flex is-justify-content-space-around">
+                <div class="is-flex is-flex-direction-column is-align-items-center">
+                    <span class="given-count has-text-weight-bold is-size-4">{{ appreciations_given }}</span>
+                    <span class="is-uppercase">Given</span>
+                </div>
+                <div class="is-flex is-flex-direction-column is-align-items-center">
+                    <span class="received-count has-text-weight-bold is-size-4">{{ appreciations_received }}</span>
+                    <span class="is-uppercase">Received</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="box">
-        <div class="tabs is-medium is-fullwidth">
-            <ul>
-                <li class="is-active">
-                    <a>
+        <div class="box">
+            <div class="tabs is-medium is-fullwidth">
+                <ul>
+                    <li class="is-active">
+                        <a>
                         <span class="icon">
                             <ion-icon name="information-circle-outline"></ion-icon>
                         </span>
-                        <span>About</span>
-                    </a>
-                </li>
-                <li>
-                    <a>
+                            <span>About</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
                         <span class="icon is-medium">
                             <ion-icon name="at-outline"></ion-icon>
                         </span>
-                        <span>Mentions</span>
-                    </a>
-                </li>
-                <li>
-                    <a>
+                            <span>Mentions</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
                         <span class="icon is-medium">
                             <ion-icon name="rocket-outline"></ion-icon>
                         </span>
-                        <span>Personal Objectives</span>
-                    </a>
-                </li>
-            </ul>
+                            <span>Personal Objectives</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-
 {% endblock %}
 
