@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
-from .response import bad_request
 from snowflake.models import User
+from .response import bad_request
 
 blueprint = Blueprint('users', __name__)
 
@@ -15,4 +15,8 @@ def autocomplete_search():
 
     users = User.find_by_name_prefix(term)
 
-    return jsonify([{'name': user.name, 'username': user.username} for user in users])
+    return jsonify([{
+        'name': user.name,
+        'username': user.username,
+        'avatar': user.profile_pic
+    } for user in users])
