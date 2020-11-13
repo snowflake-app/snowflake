@@ -85,3 +85,13 @@ body {
 .hide {
   height: 0;
 }
+
+.notification {
+  position: fixed;
+  z-index: 1000;
+  right: 2rem;
+  top: 5rem;
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+}

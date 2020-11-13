@@ -10,6 +10,20 @@
 </head>
 
 <body class="{% block page %}{% endblock %} has-navbar-fixed-top">
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="notifications">
+            {% for category, message in messages %}
+                <div class="notification is-{{ category }}">
+                    <button class="delete"></button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
 {% block content %}{% endblock %}
 <script type="text/javascript" src="{{ entrypoint('app.js') }}"></script>
 <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
