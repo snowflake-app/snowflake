@@ -102,7 +102,7 @@
                                             </span>
                                             <a class="mr-1"
                                                href="/profile/{{ action_item.created_by.username }}">+{{ action_item.created_by.name }}</a>
-                                            <span>{{ action_item.content }}</span>
+                                            <span>{{ action_item.content | add_mentions }}</span>
                                         </li>
                                     {% endfor %}
                                 </ul>
