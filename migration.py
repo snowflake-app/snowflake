@@ -1,9 +1,39 @@
 # track which SQL scripts are already applied
 import datetime
+import logging
 import os
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
-from snowflake.db import open_connection
+import psycopg2
+import sys
+from dotenv import load_dotenv
+
+logging.basicConfig(level=os.getenv('LOG_LEVEL', logging.INFO))
+
+log = logging.getLogger('migration')
+
+
+def open_connection():
+    load_dotenv()
+    uri = os.getenv('DATABASE_URI')
+
+    if uri is None:
+        log.error('DATABASE_URI not defined, exiting')
+        sys.exit(1)
+
+    result = urlparse(uri)  # also in python 3+ use: urlparse("YourUrl") not urlparse.urlparse("YourUrl")
+    username = result.username
+    password = result.password
+    database = result.path[1:]
+    hostname = result.hostname
+
+    return psycopg2.connect(
+        database=database,
+        user=username,
+        password=password,
+        host=hostname
+    )
 
 
 @dataclass
@@ -56,12 +86,12 @@ def migrate():
 
             for migration in migrations:
                 if migration.version not in applied_versions:
-                    print('Applying', migration.script)
+                    log.info('Applying %s', migration.script)
                     c.execute(migration.script)
 
                     c.execute('INSERT INTO migrations(version, description, applied_at) VALUES (%s, %s, %s)',
                               (migration.version, migration.description, datetime.datetime.now()))
-                    print(f'Applied v{migration.version} {migration.description}')
+                    log.info('Applied %s %s', migration.version, migration.description)
 
             print("Applied migrations")
 

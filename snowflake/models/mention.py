@@ -1,28 +1,18 @@
-from ..db import get_db
-from .user import User
+from ..db import db
 
 
-class Mention:
-    def __init__(self, appreciation, user, id_=-1):
-        self.user = user
-        self.appreciation = appreciation
-        self.id = id_
+class Mention(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('mentions', lazy=True))
+    appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
+    appreciation = db.relationship('Appreciation', backref=db.backref('mentions', lazy=True))
 
     @staticmethod
     def create(mention):
-        with get_db() as db:
-            with db.cursor() as c:
-                c.execute(
-                    '''
-                    INSERT INTO mention(appreciation_id, user_id)
-                    VALUES (%s, %s) RETURNING id
-                    ''', (mention.appreciation.id, mention.user.id),
-                )
-                mention.id = c.fetchone()[0]
+        db.session.add(mention)
+        db.session.commit()
 
     @staticmethod
-    def count_by_user(user: User):
-        with get_db() as db:
-            with db.cursor() as c:
-                c.execute('SELECT COUNT(*) FROM mention m WHERE m.user_id = %s', (user.id,))
-                return c.fetchone()[0]
+    def count_by_user(user):
+        return Mention.query.filter_by(user_id=user.id).count()

@@ -14,7 +14,7 @@ blueprint = Blueprint('appreciation', __name__)
 def appreciate():
     form = AppreciationForm()
     if form.validate_on_submit():
-        appreciation = Appreciation(content=form.content.data, creator=current_user, created_at=datetime.now())
+        appreciation = Appreciation(content=form.content.data, created_by=current_user, created_at=datetime.now())
         Appreciation.create(appreciation)
 
         mentions = re.findall(r'@[a-zA-Z0-9._]+', form.content.data)
