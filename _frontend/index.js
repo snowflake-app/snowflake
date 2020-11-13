@@ -4,8 +4,8 @@ import "regenerator-runtime/runtime";
 
 import {setupToggles} from "./toggle";
 import {setupAutocomplete} from "./mentions";
-import {bindLaunchButton} from "./one-on-one";
 import {setupNotifications} from "./notifications";
+import {bindLaunchButton, setupUserAutocomplete} from "./one-on-one";
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -25,5 +25,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setupAutocomplete();
+    setupUserAutocomplete();
     setupNotifications();
 });

@@ -95,3 +95,9 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.user-autocomplete-container {
+  .dropdown-menu {
+    width: 100%;
+  }
+}

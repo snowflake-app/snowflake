@@ -80,7 +80,8 @@
                                 <ul class="action-items">
                                     {% for action_item in one_on_one.get_action_items() %}
                                         <li class="block is-flex align-items-center">
-                                            <form method="post" action="{{ url_for('one_on_one.one_on_one_action_item_done') }}">
+                                            <form method="post"
+                                                  action="{{ url_for('one_on_one.one_on_one_action_item_done') }}">
                                                 {{ action_item_state_change_form.csrf_token }}
                                                 {{ render_field(action_item_state_change_form.action_item, value=action_item.id) }}
                                                 <button class="clear-button mr-1 is-clickable">
@@ -127,19 +128,38 @@
 
     <form method="post" class="modal" id="one-on-one-form">
         <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Schedule new one on one</p>
-                <button type="reset" class="delete" data-action="close"></button>
-            </header>
-            <section class="modal-card-body">
-                {{ form.csrf_token }}
-                {{ render_field(form.user, label=False, placeholder="mention someone by their username", data_has_mentions="") }}
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-success" type="submit">Save</button>
-                <button class="button" type="reset" data-action="close">Cancel</button>
-            </footer>
+        <div class="modal-content">
+            <div class="box">
+                <h2 class="is-size-4">New one on one...</h2>
+                <div class="mt-4">
+                    {{ form.csrf_token }}
+                    {{ render_field(form.user, label=False, has_autocomplete=True, placeholder="mention someone by their username") }}
+                    <div class="field">
+                        <div class="dropdown user-autocomplete-container is-block">
+                            <div class="control autocomplete has-icons-left" id="user-search-control">
+                                <div class="dropdown-trigger">
+                                    <label for="user-search" class="is-sr-only">Search user</label>
+                                    <input id="user-search" type="search" class="input" placeholder="Search user..."/>
+                                    <span class="icon is-left">
+                                        <ion-icon name="search-outline"></ion-icon>
+                                    </span>
+                                </div>
+                                <div class="dropdown-menu">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="user-list">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button class="button is-success" type="submit">Schedule</button>
+                    <button class="button" type="reset" data-action="close">Cancel</button>
+                </div>
+            </div>
         </div>
+        <button type="reset" class="modal-close is-large" data-action="close"></button>
     </form>
 {% endblock %}

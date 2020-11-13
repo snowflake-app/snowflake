@@ -58,9 +58,10 @@ class User(UserMixin):
     def find_by_name_prefix(cls, term):
         with get_db() as db:
             with db.cursor() as c:
+                search_term = term + '%'
                 c.execute(
                     'SELECT id, name, email, profile_pic, team_name, designation, username'
-                    ' FROM "user" WHERE username LIKE %s', (term + '%',)
+                    ' FROM "user" WHERE username LIKE %s OR name  LIKE %s', (search_term, search_term)
                 )
 
                 return [User.__bind_user(row) for row in c.fetchall()]

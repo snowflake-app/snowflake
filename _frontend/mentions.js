@@ -1,5 +1,6 @@
 import Tribute from "tributejs";
 import errorHandler from "./error-handler";
+import {searchUsers} from "./api";
 
 export function setupAutocomplete() {
     document.querySelectorAll('*[data-has-mentions]')
@@ -10,8 +11,7 @@ export function setupAutocomplete() {
                     fillAttr: 'username',
                     autocompleteMode: true,
                     values: function (text, cb) {
-                        fetch("/api/users/_autocomplete?q=" + encodeURIComponent(text))
-                            .then(r => r.json())
+                        searchUsers(text)
                             .then(cb)
                             .catch(errorHandler)
                     }
