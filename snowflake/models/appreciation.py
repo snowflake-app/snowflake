@@ -102,7 +102,7 @@ class Appreciation:
                     '''
                     SELECT m.id,
                     u.id, u.name, u.email, u.profile_pic, u.team_name, u.designation, u.username
-                    FROM mention m
+                    FROM mention m 
                     JOIN "user" u ON m.user_id = u.id
                     WHERE m.appreciation_id = %s
                     ''', (self.id,))
@@ -136,7 +136,9 @@ class Appreciation:
             with db.cursor() as c:
                 c.execute(
                     '''
-                    SELECT user_id, COUNT(user_id) AS c FROM mention
+                    SELECT user_id, COUNT(user_id) AS c FROM mention m JOIN "appreciation" a ON m.appreciation_id=a.id
+                    WHERE a.created_at BETWEEN date_trunc('month', CURRENT_DATE) 
+                    AND (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 second')
                     GROUP BY user_id ORDER BY c DESC LIMIT 5
                     ''')
 
