@@ -18,7 +18,7 @@ def register():
         full_name = session['users_name']
         username = users_email.split("@")[0]
 
-        user = User(id_=unique_id, email=users_email, name=full_name, profile_pic=picture,
+        user = User(id=unique_id, email=users_email, name=full_name, profile_pic=picture,
                     team_name=form.team_name.data, designation=form.designation.data, username=username)
 
         User.create(user)

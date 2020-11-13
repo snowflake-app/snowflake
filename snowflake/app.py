@@ -6,13 +6,15 @@ from flask_login import LoginManager
 
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout
+from .db import db
 from .models import User
 
 load_dotenv()
 logger.setup()
 
 app = Flask(__name__)
-settings.load(app)
+db.init_app(app)
+settings.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

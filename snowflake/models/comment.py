@@ -1,24 +1,16 @@
-from ..db import get_db
-from .user import User
+from ..db import db
 
 
-class Comment:
-    def __init__(self, appreciation, user: User, content, created_at, id_=-1):
-        self.user = user
-        self.appreciation = appreciation
-        self.content = content
-        self.created_at = created_at
-        self.id = id_
+class Comment(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime)
+    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('comments', lazy=True))
+    appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
+    appreciation = db.relationship('Appreciation')
 
     @staticmethod
     def create(comment):
-        with get_db() as db:
-            with db.cursor() as c:
-                c.execute(
-                    '''
-                    INSERT INTO comment(appreciation_id, user_id, content, created_at)
-                    VALUES (%s, %s, %s, %s) RETURNING id
-                    ''',
-                    (comment.appreciation.id, comment.user.id, comment.content, comment.created_at),
-                )
-                comment.id = c.fetchone()[0]
+        db.session.add(comment)
+        db.session.commit()

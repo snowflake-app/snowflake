@@ -18,6 +18,7 @@ psycopg2-binary = "*"
 gunicorn = "*"
 python-dotenv = "*"
 markupsafe = "*"
+flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"
