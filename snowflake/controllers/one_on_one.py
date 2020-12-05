@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect, render_template
+from flask import Blueprint, url_for, redirect, render_template, flash
 from flask_login import login_required, current_user
 
 from snowflake.forms import OneOnOneForm, OneOnOneActionItemForm, OneOnOneActionItemStateChange
@@ -17,9 +17,14 @@ def one_on_one(_id):
 
     if form.validate_on_submit():
         user = User.get_by_username(form.user.data)
-        o = OneOnOne(user=user, created_by=current_user)
-        OneOnOne.create(o)
-        return redirect(url_for("one_on_one.one_on_one"))
+
+        if user is not None:
+            o = OneOnOne(user=user, created_by=current_user)
+            OneOnOne.create(o)
+            return redirect(url_for("one_on_one.one_on_one"))
+        else:
+            form.user.errors.append("User not found")
+            flash(f'User {form.user.data} not found', category='warning')
 
     one_on_ones = OneOnOne.get_by_user(current_user)
     o = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
