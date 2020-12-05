@@ -1,4 +1,4 @@
-FROM node:latest as static
+FROM node:15 as static
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY _frontend/ /app/_frontend
 
 RUN mkdir -p snowflake/static/assets && npm run build
 
-FROM python:3
+FROM python:3.8
 
 WORKDIR /app
 
