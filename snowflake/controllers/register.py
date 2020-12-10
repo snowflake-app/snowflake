@@ -25,6 +25,6 @@ def register():
 
         login_user(user)
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index.index'))
 
     return render_template('welcome.html', form=form, user_name=session['users_name'], picture=session['picture'])
