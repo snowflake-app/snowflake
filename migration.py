@@ -63,6 +63,8 @@ def migrate():
                               (migration.version, migration.description, datetime.datetime.now()))
                     print(f'Applied v{migration.version} {migration.description}')
 
+            print("Applied migrations")
+
 
 if __name__ == '__main__':
     migrate()
