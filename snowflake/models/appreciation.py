@@ -1,3 +1,4 @@
+from .like import Like
 from .user import User
 from ..db import db
 
@@ -28,7 +29,7 @@ class Appreciation(db.Model):
         return Appreciation.query.order_by(Appreciation.created_at.desc()).all()
 
     def get_like_count(self):
-        return db.session.scalar('SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :id', {'id': self.id})
+        return Like.query.filter_by(appreciation=self).count()
 
     def get_comment_count(self):
         return db.session.scalar('SELECT COUNT(*) FROM comment c WHERE c.appreciation_id = :id', {'id': self.id})
