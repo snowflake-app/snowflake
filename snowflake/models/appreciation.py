@@ -25,7 +25,7 @@ class Appreciation(db.Model):
 
     @staticmethod
     def get_all():
-        return Appreciation.query.all()
+        return Appreciation.query.order_by(Appreciation.created_at.desc()).all()
 
     def get_like_count(self):
         return db.session.scalar('SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :id', {'id': self.id})
