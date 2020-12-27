@@ -63,45 +63,81 @@
                         </div>
                         <nav class="level is-mobile">
                             <div class="level-left">
-                                {% if appreciation.is_liked_by(user) %}
-                                <form class="level-item" method="post" action="{{ url_for('appreciation.dislike') }}">
-                                    {{ like_form.csrf_token }}
-                                    <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
-                                    <button title="Like" type="submit"
-                                            class="post-action-button clear-button has-text-danger level-item is-clickable">
+                                <div class="level-item">
+                                    {% if appreciation.is_liked_by(user) %}
+                                        <form method="post"
+                                              action="{{ url_for('appreciation.dislike') }}">
+                                            {{ like_form.csrf_token }}
+                                            <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
+                                            <button title="Like" type="submit"
+                                                    class="post-action-button clear-button has-text-danger level-item is-clickable">
                                           <span class="icon is-medium">
                                             <ion-icon name="heart"></ion-icon>
                                           </span>
-                                        <span>
-                                            {{appreciation.get_like_count()}}
-                                          </span>
-                                    </button>
-                                </form>
-                                {% else %}
-                                <form class="level-item" method="post" action="{{ url_for('appreciation.like') }}">
-                                    {{ like_form.csrf_token }}
-                                    <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
-                                    <button title="Like" type="submit"
-                                            class="post-action-button clear-button has-text-danger level-item is-clickable">
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post"
+                                              action="{{ url_for('appreciation.like') }}">
+                                            {{ like_form.csrf_token }}
+                                            <input type="hidden" name="appreciation" value="{{ appreciation.id }}">
+                                            <button title="Like" type="submit"
+                                                    class="post-action-button clear-button has-text-danger level-item is-clickable">
                                       <span class="icon is-medium">
                                       <ion-icon name="heart-outline"></ion-icon>
                                       </span>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    <button type="button" class="clear-button has-text-danger level-item is-clickable"
+                                            data-toggle-modal="#likes-{{ appreciation.id }}">
                                         <span>
-                                      {{appreciation.get_like_count()}}
-                                      </span>
+                                            {% set like_count = appreciation.get_like_count() %}
+                                            {{ like_count }} {{ choose_plural(like_count, 'like', 'likes') }}
+                                        </span>
                                     </button>
-                                </form>
-                                {% endif %}
+                                </div>
                                 <button title="Comment"
                                         class="post-action-button comment-button clear-button has-text-info level-item is-clickable"
-                                        data-toggle="#comments-{{appreciation.id}}">
+                                        data-toggle="#comments-{{ appreciation.id }}">
                                       <span class="icon is-medium">
                                         <ion-icon name="chatbubble-outline"></ion-icon>
                                       </span>
                                     <span>
-                                      {{appreciation.get_comment_count()}}
+                                      {{ appreciation.get_comment_count() }}
                                       </span>
                                 </button>
+                                <div class="modal" id="likes-{{ appreciation.id }}">
+                                    <div class="modal-background"></div>
+                                    <div class="modal-content">
+                                        <div class="box">
+                                            <h2 class="is-size-4">Likes</h2>
+                                            <div class="menu mt-4">
+                                                <ul class="menu-list">
+                                                    {% for like in appreciation.likes %}
+                                                        <li class="is-flex">
+                                                            <figure class="media-left is-flex">
+                                                                <div class="participants-avatar image is-48x48">
+                                                                    <img alt="Profile picture of {{ like.user.name }}"
+                                                                         title="{{ like.user.name }}"
+                                                                         class="is-rounded"
+                                                                         src="{{ like.user.profile_pic }}">
+                                                                </div>
+                                                            </figure>
+                                                            <div class="content">
+                                                                <h3 class="is-size-5 has-font-weight-bold mb-0">
+                                                                    {{ like.user.name }}
+                                                                </h3>
+                                                                <p class="help">{{ like.user.designation }}</p>
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="reset" class="modal-close is-large" data-action="close"></button>
+                                </div>
                             </div>
                         </nav>
                         <div class="block hide is-clipped" id="comments-{{appreciation.id}}">

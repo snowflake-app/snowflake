@@ -13,6 +13,7 @@ load_dotenv()
 logger.setup()
 
 app = Flask(__name__)
+
 db.init_app(app)
 settings.init_app(app)
 
@@ -52,6 +53,13 @@ def setup():
             else:
                 return url_for('static', filename='assets/' + chunk)
 
+    def choose_plural(size, singular, plural):
+        if size != 1:
+            return plural
+        else:
+            return singular
+
     return {
-        'entrypoint': entrypoint
+        'entrypoint': entrypoint,
+        'choose_plural': choose_plural,
     }
