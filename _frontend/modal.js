@@ -1,10 +1,30 @@
 export function setupModals() {
+    function showModal(modal) {
+        modal.classList.add("is-active");
+        modal.dispatchEvent(new Event('open'));
+    }
+
+    function closeModal(modal) {
+        modal.classList.remove("is-active");
+        modal.dispatchEvent(new Event('close'));
+    }
+
     document.querySelectorAll('button[data-toggle-modal]').forEach(button => {
-        const target = document.querySelector(button.dataset.toggleModal)
+        const modal = document.querySelector(button.dataset.toggleModal)
         button.addEventListener('click', evt => {
             evt.preventDefault()
-            target.classList.toggle("is-active")
+
+            if (modal.classList.contains("is-active")) {
+                closeModal(modal)
+            } else {
+                showModal(modal);
+            }
         })
+
+        modal.addEventListener('close', () => {
+            button.focus();
+        })
+
     });
 
     document.querySelectorAll('.modal').forEach(modal => {
@@ -12,19 +32,14 @@ export function setupModals() {
 
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
-                modal.classList.remove("is-active");
+                closeModal(modal);
             });
         }
+    });
 
-
-        const background = modal.querySelector('.modal-background')
-
-        if (background) {
-            background.addEventListener('keydown', evt => {
-                if (evt.key === "Escape" || evt.key === "Esc") {
-                    modal.classList.remove("is-active")
-                }
-            })
+    document.addEventListener('keyup', e => {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            document.querySelectorAll('.modal.is-active').forEach(closeModal);
         }
     });
 }
