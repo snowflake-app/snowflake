@@ -131,6 +131,14 @@
                                                                 <p class="help">{{ like.user.designation }}</p>
                                                             </div>
                                                         </li>
+                                                    {% else %}
+                                                        <li class="is-flex">
+                                                            <div class="content">
+                                                                <h3 class="is-size-5 mb-0 text-center">
+                                                                    No likes yet
+                                                                </h3>
+                                                            </div>
+                                                        </li>
                                                     {% endfor %}
                                                 </ul>
                                             </div>
