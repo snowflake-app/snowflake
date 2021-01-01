@@ -28,6 +28,6 @@ class Notification(db.Model):
 
     @staticmethod
     def get_by_user(user: User):
-        return Notification.query.filter_by(user=user)
+        return Notification.query.filter_by(user=user).all()
 
 
