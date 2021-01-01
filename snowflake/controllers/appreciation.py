@@ -11,7 +11,6 @@ from snowflake.services.notification import notify_appreciation
 blueprint = Blueprint('appreciation', __name__)
 
 
-
 @blueprint.route('/appreciate', methods=['POST'])
 def appreciate():
     form = AppreciationForm()
