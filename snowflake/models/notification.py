@@ -1,9 +1,12 @@
 from . import Comment
 from .appreciation import Appreciation
+from .one_on_one import OneOnOne
 from .user import User
 from ..db import db
 
 TYPE_APPRECIATION = "appreciation"
+TYPE_ONE_ON_ONE_SETUP = "one_on_one_setup"
+TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED = "one_on_one_action_item_added"
 TYPE_COMMENT_ON_APPRECIATION_RECEIVED = "comment_on_appreciation_received"
 TYPE_COMMENT_ON_APPRECIATION_GIVEN = "comment_on_appreciation_given"
 TYPE_COMMENT_ON_APPRECIATION_COMMENTED = "comment_on_appreciation_commented"
@@ -47,5 +50,7 @@ class Notification(db.Model):
             return Appreciation.get(int(self.object_id))
         elif self.type == TYPE_COMMENT_ON_APPRECIATION_GIVEN or self.type == TYPE_COMMENT_ON_APPRECIATION_RECEIVED:
             return Comment.get(int(self.object_id))
+        elif self.type == TYPE_ONE_ON_ONE_SETUP or self.type == TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED:
+            return OneOnOne.get(self.object_id)
 
         return None

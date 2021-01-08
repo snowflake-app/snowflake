@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 
 from snowflake.forms import OneOnOneForm, OneOnOneActionItemForm, OneOnOneActionItemStateChange
 from snowflake.models import User, OneOnOne, OneOnOneActionItem
+from snowflake.services import notification
 
 blueprint = Blueprint('one_on_one', __name__)
 
@@ -21,6 +22,9 @@ def one_on_one(_id):
         if user is not None:
             o = OneOnOne(user=user, created_by=current_user)
             OneOnOne.create(o)
+
+            notification.notify_one_on_one_setup(o)
+
             return redirect(url_for("one_on_one.one_on_one"))
         else:
             form.user.errors.append("User not found")
@@ -46,6 +50,8 @@ def one_on_one_action_item():
         action_item = OneOnOneActionItem(content=form.content.data, one_on_one=o, created_by=current_user, state=0)
 
         OneOnOneActionItem.create(action_item)
+
+        notification.notify_one_on_one_action_item_added(action_item)
 
     return redirect(f'/1-on-1s/{form.one_on_one.data}')
 

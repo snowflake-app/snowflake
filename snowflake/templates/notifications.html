@@ -22,6 +22,14 @@
                                     <span>{{ notification.object.user.name }} commented on an appreciation you have given</span>
                                 {% elif notification.type == "comment_on_appreciation_commented" %}
                                     <span>{{ notification.object.user.name }} also commented on an appreciation you commented</span>
+                                {% elif notification.type == "one_on_one_setup" %}
+                                    <span>{{ notification.object.created_by.name }} setup an one on one with you</span>
+                                {% elif notification.type == "one_on_one_action_item_added" %}
+                                    {% if notification.object.created_by_id == current_user.id %}
+                                        <span>{{ notification.object.user.name }} added an action item to your one on one</span>
+                                    {% else %}
+                                        <span>{{ notification.object.created_by.name }} added an action item to your one on one</span>
+                                    {% endif %}
                                 {% endif %}
                                 <span class="help">
                                     <time datetime="{{ notification.created_at | iso_time }}">{{ notification.created_at | humanize_time }}</time>
