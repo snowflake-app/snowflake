@@ -14,6 +14,8 @@ def build_redirect(notification: Notification):
     elif notification.type == TYPE_COMMENT_ON_APPRECIATION_RECEIVED \
             or notification.type == TYPE_COMMENT_ON_APPRECIATION_GIVEN:
         return url_for('index.index') + f"#appreciation-{notification.object.appreciation.id}"
+    elif notification.type == TYPE_ONE_ON_ONE_SETUP or TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED:
+        return url_for('one_on_one.one_on_one', _id=notification.object.id)
 
 
 @login_required

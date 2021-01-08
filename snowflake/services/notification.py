@@ -4,6 +4,7 @@ from typing import Dict
 from flask_login import current_user
 
 from ..db import transaction
+from ..models import OneOnOneActionItem
 from ..models.notification import *
 
 
@@ -39,3 +40,23 @@ def notify_comment(c: Comment):
             if user_id != current_user.id:
                 db.session.add(Notification(created_at=now, user_id=user_id, type=notification_type,
                                             object_id=str(c.id)))
+
+
+def notify_one_on_one_setup(o: OneOnOne):
+    with transaction():
+        db.session.add(Notification(created_at=datetime.now(),
+                                    user_id=o.user_id,
+                                    type=TYPE_ONE_ON_ONE_SETUP,
+                                    object_id=str(o.id)))
+
+
+def notify_one_on_one_action_item_added(action_item: OneOnOneActionItem):
+    with transaction():
+        user_id = action_item.one_on_one.user_id \
+            if action_item.one_on_one.created_by_id == current_user.id else \
+            action_item.one_on_one.created_by_id
+
+        db.session.add(Notification(created_at=datetime.now(),
+                                    user_id=user_id,
+                                    type=TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED,
+                                    object_id=str(action_item.one_on_one.id)))
