@@ -1,5 +1,8 @@
+from .appreciation import Appreciation
 from .user import User
 from ..db import db
+
+TYPE_APPRECIATION = "appreciation"
 
 
 class Notification(db.Model):
@@ -23,11 +26,20 @@ class Notification(db.Model):
         return Notification.query.get(id_)
 
     @staticmethod
-    def count_by_user(user: User):
-        return Notification.query.filter_by(user=user).count()
+    def count_unread_by_user(user: User):
+        return Notification.query.filter_by(user=user, read=False).count()
 
     @staticmethod
     def get_by_user(user: User):
         return Notification.query.filter_by(user=user).all()
 
+    @staticmethod
+    def get_unread_by_user(user: User):
+        return Notification.query.filter_by(user=user, read=False).all()
 
+    @property
+    def object(self):
+        if self.type == TYPE_APPRECIATION:
+            return Appreciation.get(int(self.object_id))
+
+        return None

@@ -41,19 +41,15 @@
                     </span>
                         <span>Personal Objective</span>
                     </a>
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
+
+                    <a id="notification-button" class="navbar-item tagged" href="{{ url_for('notifications.notifications') }}">
+                        <div class="tagged">
                              <span class="icon is-medium">
                                  <ion-icon class="is-size-4" name="notifications-outline"></ion-icon>
                              </span>
-                        </a>
-
-                        <div class="navbar-dropdown is-right">
-                            <span class="icon is-medium is-flex text-center">
-                                <img src="{{url_for('static', filename='loader.svg')}}">
-                             </span>
                         </div>
-                    </div>
+                    </a>
+
                     <div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link">
                             Hello {{ current_user.name }}

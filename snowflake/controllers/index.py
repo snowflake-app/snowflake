@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 
 from snowflake.forms import AppreciationForm, LikeForm, CommentForm
-from snowflake.models import Appreciation, Mention
+from snowflake.models import Appreciation, Mention, Notification
 
 blueprint = Blueprint('index', __name__)
 

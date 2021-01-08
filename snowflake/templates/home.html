@@ -33,7 +33,7 @@
                 </form>
                 <hr>
                 {% for appreciation in appreciations %}
-                <article class="appreciation media">
+                <article id="appreciation-{{ appreciation.id }}" class="appreciation media">
                     <figure class="media-left is-flex">
                         <div class="participants-avatar image is-48x48">
                             <img alt="Profile picture of {{ appreciation.creator.name }}"

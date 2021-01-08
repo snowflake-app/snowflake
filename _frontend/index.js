@@ -7,6 +7,7 @@ import {setupAutocomplete} from "./mentions";
 import {setupAlerts} from "./alerts";
 import {bindLaunchButton, setupUserAutocomplete} from "./one-on-one";
 import {setupModals} from "./modal";
+import {setupNotifications} from "./notifications";
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -29,4 +30,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupUserAutocomplete();
     setupAlerts();
     setupModals();
+    await setupNotifications()
 });
