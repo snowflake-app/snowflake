@@ -4,7 +4,9 @@ from .user import User
 from ..db import db
 
 TYPE_APPRECIATION = "appreciation"
-TYPE_COMMENT = "comment"
+TYPE_COMMENT_ON_APPRECIATION_RECEIVED = "comment_on_appreciation_received"
+TYPE_COMMENT_ON_APPRECIATION_GIVEN = "comment_on_appreciation_given"
+TYPE_COMMENT_ON_APPRECIATION_COMMENTED = "comment_on_appreciation_commented"
 
 
 class Notification(db.Model):
@@ -43,7 +45,7 @@ class Notification(db.Model):
     def object(self):
         if self.type == TYPE_APPRECIATION:
             return Appreciation.get(int(self.object_id))
-        elif self.type == TYPE_COMMENT:
+        elif self.type == TYPE_COMMENT_ON_APPRECIATION_GIVEN or self.type == TYPE_COMMENT_ON_APPRECIATION_RECEIVED:
             return Comment.get(int(self.object_id))
 
         return None

@@ -15,11 +15,13 @@
                             <a href="{{ url_for('notifications.open_notification', _id=notification.id) }}"
                                class="is-flex is-flex-direction-column">
                                 {% if notification.type == "appreciation" %}
-                                    {% set appreciation = notification.object %}
-                                    <span>{{ appreciation.created_by.name }} appreciated you</span>
-                                {% elif notification.type == "comment" %}
-                                    {% set comment = notification.object %}
-                                    <span>{{ comment.user.name }} commented on your appreciation</span>
+                                    <span>{{ notification.object.created_by.name }} appreciated you</span>
+                                {% elif notification.type == "comment_on_appreciation_received" %}
+                                    <span>{{ notification.object.user.name }} commented on an appreciation you received</span>
+                                {% elif notification.type == "comment_on_appreciation_given" %}
+                                    <span>{{ notification.object.user.name }} commented on an appreciation you have given</span>
+                                {% elif notification.type == "comment_on_appreciation_commented" %}
+                                    <span>{{ notification.object.user.name }} also commented on an appreciation you commented</span>
                                 {% endif %}
                                 <span class="help">
                                     <time datetime="{{ notification.created_at | iso_time }}">{{ notification.created_at | humanize_time }}</time>

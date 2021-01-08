@@ -1,3 +1,4 @@
+from .appreciation import Appreciation
 from ..db import db
 
 
@@ -8,7 +9,7 @@ class Comment(db.Model):
     user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('comments', lazy=True))
     appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
-    appreciation = db.relationship('Appreciation')
+    appreciation: Appreciation = db.relationship('Appreciation')
 
     @staticmethod
     def create(comment):
