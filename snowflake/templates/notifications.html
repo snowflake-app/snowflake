@@ -1,0 +1,33 @@
+{% extends "authenticated.html" %}
+
+{% block page %}notifications{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="columns">
+            <div class="column is-two-thirds">
+                <div class="box">
+                    <h2 class="is-size-2 is-bold">Your notifications</h2>
+                    <hr>
+                    {% for notification in notifications %}
+                        <div class="notification-entry px-2 py-1 {% if not notification.read %} unread has-background-warning-light{% endif %}">
+                            {% if notification.type == "appreciation" %}
+                                {% set appreciation = notification.object %}
+                                <a href="{{ url_for('notifications.open_notification', _id=notification.id) }}"
+                                   class="is-flex is-flex-direction-column">
+                                    <span>{{ appreciation.created_by.name }} appreciated you</span>
+                                    <span class="help">
+                                        <time datetime="{{ appreciation.created_at | iso_time }}">{{ appreciation.created_at | humanize_time }}</time>
+                                    </span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

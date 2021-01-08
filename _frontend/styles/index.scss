@@ -101,3 +101,22 @@ body {
     width: 100%;
   }
 }
+
+.tagged {
+  position: relative;
+
+  .tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 1rem;
+    padding: .25rem;
+    font-size: .5rem;
+    width: 1rem;
+  }
+}
+
+.is-small-tag {
+  font-size: 0.5rem;
+  padding: 0.15rem;
+}

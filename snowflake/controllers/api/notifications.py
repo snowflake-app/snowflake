@@ -6,7 +6,7 @@ from snowflake.db import db
 from snowflake.models import User
 from snowflake.models.notification import Notification
 
-blueprint = Blueprint('notifications', __name__)
+blueprint = Blueprint('api.notifications', __name__)
 
 
 def user_to_json(user: User):
@@ -26,6 +26,12 @@ def to_json(n):
         'object_id': n.object_id,
         'read': n.read
     }
+
+
+@login_required
+@blueprint.route('/_count')
+def notification_count():
+    return jsonify(Notification.count_unread_by_user(current_user))
 
 
 @login_required
