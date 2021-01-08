@@ -10,9 +10,9 @@ blueprint = Blueprint('notifications', __name__)
 
 def build_redirect(notification: Notification):
     if notification.type == TYPE_APPRECIATION:
-        return url_for('index.index') + "#appreciation-" + notification.object_id
+        return url_for('index.index') + f"#appreciation-{notification.object_id}"
     elif notification.type == TYPE_COMMENT:
-        return url_for('index.index') + "#appreciation-" + notification.object.appreciation.id
+        return url_for('index.index') + f"#appreciation-{notification.object.appreciation.id}"
 
 
 @login_required
