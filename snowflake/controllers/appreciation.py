@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 
 from snowflake.forms import AppreciationForm, LikeForm, CommentForm
 from snowflake.models import Appreciation, User, Mention, Like, Comment
-from snowflake.services.notification import notify_appreciation
+from snowflake.services import notification
 
 blueprint = Blueprint('appreciation', __name__)
 
@@ -25,7 +25,8 @@ def appreciate():
                 continue
             m = Mention(user=user, appreciation=appreciation)
             Mention.create(m)
-        notify_appreciation(appreciation)
+
+        notification.notify_appreciation(appreciation)
 
         return redirect(url_for('index.index'))
     else:
@@ -55,6 +56,8 @@ def comment():
 
         c = Comment(appreciation=appreciation, user=current_user, content=form.content.data, created_at=datetime.now())
         Comment.create(c)
+
+        notification.notify_comment(c)
 
     return redirect(url_for('index.index'))
 

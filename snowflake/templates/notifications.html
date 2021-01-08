@@ -12,16 +12,19 @@
                     <hr>
                     {% for notification in notifications %}
                         <div class="notification-entry px-2 py-1 {% if not notification.read %} unread has-background-warning-light{% endif %}">
-                            {% if notification.type == "appreciation" %}
-                                {% set appreciation = notification.object %}
-                                <a href="{{ url_for('notifications.open_notification', _id=notification.id) }}"
-                                   class="is-flex is-flex-direction-column">
+                            <a href="{{ url_for('notifications.open_notification', _id=notification.id) }}"
+                               class="is-flex is-flex-direction-column">
+                                {% if notification.type == "appreciation" %}
+                                    {% set appreciation = notification.object %}
                                     <span>{{ appreciation.created_by.name }} appreciated you</span>
-                                    <span class="help">
-                                        <time datetime="{{ appreciation.created_at | iso_time }}">{{ appreciation.created_at | humanize_time }}</time>
-                                    </span>
-                                </a>
-                            {% endif %}
+                                {% elif notification.type == "comment" %}
+                                    {% set comment = notification.object %}
+                                    <span>{{ comment.user.name }} commented on your appreciation</span>
+                                {% endif %}
+                                <span class="help">
+                                    <time datetime="{{ notification.created_at | iso_time }}">{{ notification.created_at | humanize_time }}</time>
+                                </span>
+                            </a>
                         </div>
                     {% endfor %}
                 </div>

@@ -14,3 +14,7 @@ class Comment(db.Model):
     def create(comment):
         db.session.add(comment)
         db.session.commit()
+
+    @staticmethod
+    def get(comment_id: int):
+        return Comment.query.get(comment_id)
