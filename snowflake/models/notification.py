@@ -1,8 +1,10 @@
+from . import Comment
 from .appreciation import Appreciation
 from .user import User
 from ..db import db
 
 TYPE_APPRECIATION = "appreciation"
+TYPE_COMMENT = "comment"
 
 
 class Notification(db.Model):
@@ -41,5 +43,7 @@ class Notification(db.Model):
     def object(self):
         if self.type == TYPE_APPRECIATION:
             return Appreciation.get(int(self.object_id))
+        elif self.type == TYPE_COMMENT:
+            return Comment.get(int(self.object_id))
 
         return None
