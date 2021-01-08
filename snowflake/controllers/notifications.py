@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from snowflake.controllers.api.response import not_found
-from snowflake.models.notification import Notification, TYPE_APPRECIATION, TYPE_COMMENT
+from snowflake.models.notification import *
 from ..db import db
 
 blueprint = Blueprint('notifications', __name__)
@@ -11,7 +11,8 @@ blueprint = Blueprint('notifications', __name__)
 def build_redirect(notification: Notification):
     if notification.type == TYPE_APPRECIATION:
         return url_for('index.index') + f"#appreciation-{notification.object_id}"
-    elif notification.type == TYPE_COMMENT:
+    elif notification.type == TYPE_COMMENT_ON_APPRECIATION_RECEIVED \
+            or notification.type == TYPE_COMMENT_ON_APPRECIATION_GIVEN:
         return url_for('index.index') + f"#appreciation-{notification.object.appreciation.id}"
 
 
