@@ -1,4 +1,10 @@
 export async function setupNotifications() {
+    loadNotifications()
+    setInterval(loadNotifications, 10000)
+
+}
+
+async function loadNotifications() {
     const notificationCounterContainer = document.querySelector('#notification-button .tagged')
 
     if (notificationCounterContainer) {
