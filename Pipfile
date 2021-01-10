@@ -19,6 +19,8 @@ gunicorn = "*"
 python-dotenv = "*"
 markupsafe = "*"
 flask-sqlalchemy = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"

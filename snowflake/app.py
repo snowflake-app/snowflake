@@ -7,6 +7,7 @@ from flask_login import LoginManager
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
 from .db import db
+from .marshmallow import marshmallow
 from .models import User
 
 load_dotenv()
@@ -16,6 +17,7 @@ app = Flask(__name__)
 
 db.init_app(app)
 settings.init_app(app)
+marshmallow.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
