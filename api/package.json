@@ -1,0 +1,14 @@
+{
+  "name": "snowflake-api",
+  "version": "0.1.0",
+  "description": "Snowflake API Documentation",
+  "scripts": {
+    "start": "redoc-cli serve -p 8000 -w openapi.yaml"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "private": "true",
+  "dependencies": {
+    "redoc-cli": "^0.10.2"
+  }
+}

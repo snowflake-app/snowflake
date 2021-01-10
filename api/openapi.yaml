@@ -1,0 +1,68 @@
+openapi: 3.0.1
+
+info:
+  title: 'Snowflake API'
+  version: '1'
+
+servers:
+  - url: /
+
+components:
+  responses:
+    NotFound:
+      description: 'Not found'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Not found'
+
+    BadRequest:
+      description: 'Bad request'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Bad request'
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        designation:
+          type: string
+        team_name:
+          type: string
+        email:
+          type: string
+          format: email
+        profile_pic:
+          type: string
+          format: url
+        username:
+          type: string
+
+paths:
+  '/v1/users/_autocomplete':
+    get:
+      summary: 'Autocomplete'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
