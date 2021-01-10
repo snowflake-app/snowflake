@@ -21,6 +21,7 @@ markupsafe = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.8"
