@@ -9,6 +9,13 @@ def bad_request(message="Bad request"):
     return error_body(message), 400
 
 
+def validation_error(messages):
+    return jsonify({
+        'message': 'Validation error',
+        'errors': messages
+    }), 400
+
+
 def not_found(message="Not found"):
     return error_body(message), 404
 
@@ -19,3 +26,7 @@ def forbidden(message="Forbidden"):
 
 def unauthorized(message="Unauthorized"):
     return error_body(message), 401
+
+
+def no_content():
+    return '', 204

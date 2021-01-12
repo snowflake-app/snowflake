@@ -3,7 +3,7 @@ from snowflake.db import db
 
 class OneOnOneActionItem(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    state = db.Column(db.Boolean)
+    state = db.Column(db.Boolean, default=False)
     content = db.Column(db.String)
 
     one_on_one_id = db.Column(db.BigInteger, db.ForeignKey('one_on_one.id'), nullable=False)
@@ -22,5 +22,5 @@ class OneOnOneActionItem(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(_id):
+    def get(_id) -> 'OneOnOneActionItem':
         return OneOnOneActionItem.query.get(_id)
