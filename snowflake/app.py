@@ -24,9 +24,12 @@ login_manager.init_app(app)
 
 app.register_blueprint(api.healthcheck.blueprint, url_prefix="/api/healthcheck")
 app.register_blueprint(index.blueprint)
+
+app.register_blueprint(api.notifications.blueprint, url_prefix="/api/notifications")
+app.register_blueprint(api.one_on_ones.blueprint, url_prefix="/api/one_on_ones")
 app.register_blueprint(api.token.blueprint, url_prefix="/api/tokens")
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
-app.register_blueprint(api.notifications.blueprint, url_prefix="/api/notifications")
+
 app.register_blueprint(login.blueprint, url_prefix="/login")
 app.register_blueprint(register.blueprint, url_prefix="/register")
 app.register_blueprint(profile.blueprint, url_prefix="/profile")
