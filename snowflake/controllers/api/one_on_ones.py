@@ -22,13 +22,13 @@ create_or_edit_one_on_one_action_item_schema = CreateOrEditOneOnOneActionItemSch
 
 @login_required
 @blueprint.route('', methods=['GET'])
-def list_all():
+def list_all_one_on_one():
     return one_on_one_schema.jsonify(OneOnOne.get_by_user(current_user), many=True)
 
 
 @login_required
 @blueprint.route('', methods=['PUT'])
-def create():
+def create_one_on_one():
     if not request.is_json:
         return bad_request()
 
@@ -47,7 +47,7 @@ def create():
 
 @login_required
 @blueprint.route('/<_id>', methods=['GET'])
-def get(_id: int):
+def get_one_on_one(_id: int):
     one_on_one = OneOnOne.get(_id)
 
     if not one_on_one:
@@ -60,8 +60,25 @@ def get(_id: int):
 
 
 @login_required
+@blueprint.route('/<_id>', methods=['DELETE'])
+def delete_one_on_one(_id: int):
+    one_on_one = OneOnOne.get(_id)
+
+    if not one_on_one:
+        return not_found()
+
+    if not acl.can_delete_one_on_one(one_on_one):
+        return unauthorized()
+
+    with transaction():
+        db.session.remove(one_on_one)
+
+    return no_content()
+
+
+@login_required
 @blueprint.route('/<one_on_one_id>/action_items', methods=['GET'])
-def get_action_items(one_on_one_id: int):
+def list_action_items(one_on_one_id: int):
     one_on_one = OneOnOne.get(one_on_one_id)
 
     if not one_on_one:
@@ -71,53 +88,6 @@ def get_action_items(one_on_one_id: int):
         return unauthorized()
 
     return one_on_one_action_item_schema.jsonify(one_on_one.action_items, many=True)
-
-
-@login_required
-@blueprint.route('/<one_on_one_id>/action_items/<action_item_id>', methods=['GET'])
-def get_action_item(one_on_one_id: int, action_item_id: int):
-    one_on_one = OneOnOne.get(one_on_one_id)
-
-    if not one_on_one:
-        return not_found()
-
-    if not acl.can_view_one_on_one(one_on_one):
-        return unauthorized()
-
-    action_item = OneOnOneActionItem.get(action_item_id)
-
-    if not action_item:
-        return not_found()
-
-    if not action_item.one_on_one_id == one_on_one.id:
-        return not_found()
-
-    return one_on_one_action_item_schema.jsonify(action_item)
-
-
-@login_required
-@blueprint.route('/<one_on_one_id>/action_items/<action_item_id>', methods=['DELETE'])
-def delete_action_item(one_on_one_id: int, action_item_id: int):
-    one_on_one = OneOnOne.get(one_on_one_id)
-
-    if not one_on_one:
-        return not_found()
-
-    if not acl.can_view_one_on_one(one_on_one):
-        return unauthorized()
-
-    action_item = OneOnOneActionItem.get(action_item_id)
-
-    if not action_item:
-        return not_found()
-
-    if not action_item.one_on_one_id == one_on_one.id:
-        return not_found()
-
-    with transaction():
-        db.session.remove(one_on_one)
-
-    return no_content()
 
 
 @login_required
@@ -149,6 +119,28 @@ def create_action_item(one_on_one_id: int):
 
 
 @login_required
+@blueprint.route('/<one_on_one_id>/action_items/<action_item_id>', methods=['GET'])
+def get_action_item(one_on_one_id: int, action_item_id: int):
+    one_on_one = OneOnOne.get(one_on_one_id)
+
+    if not one_on_one:
+        return not_found()
+
+    if not acl.can_view_one_on_one(one_on_one):
+        return unauthorized()
+
+    action_item = OneOnOneActionItem.get(action_item_id)
+
+    if not action_item:
+        return not_found()
+
+    if not action_item.one_on_one_id == one_on_one.id:
+        return not_found()
+
+    return one_on_one_action_item_schema.jsonify(action_item)
+
+
+@login_required
 @blueprint.route('/<one_on_one_id>/action_items/<action_item_id>', methods=['PATCH'])
 def edit_action_item(one_on_one_id: int, action_item_id: int):
     if not request.is_json:
@@ -176,15 +168,23 @@ def edit_action_item(one_on_one_id: int, action_item_id: int):
 
 
 @login_required
-@blueprint.route('/<_id>', methods=['DELETE'])
-def delete_one_on_one(_id: int):
-    one_on_one = OneOnOne.get(_id)
+@blueprint.route('/<one_on_one_id>/action_items/<action_item_id>', methods=['DELETE'])
+def delete_action_item(one_on_one_id: int, action_item_id: int):
+    one_on_one = OneOnOne.get(one_on_one_id)
 
     if not one_on_one:
         return not_found()
 
-    if not acl.can_delete_one_on_one(one_on_one):
+    if not acl.can_view_one_on_one(one_on_one):
         return unauthorized()
+
+    action_item = OneOnOneActionItem.get(action_item_id)
+
+    if not action_item:
+        return not_found()
+
+    if not action_item.one_on_one_id == one_on_one.id:
+        return not_found()
 
     with transaction():
         db.session.remove(one_on_one)
