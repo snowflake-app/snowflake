@@ -22,13 +22,13 @@ create_or_edit_one_on_one_action_item_schema = CreateOrEditOneOnOneActionItemSch
 
 @blueprint.route('', methods=['GET'])
 @login_required
-def list_all():
+def list_all_one_on_one():
     return one_on_one_schema.jsonify(OneOnOne.get_by_user(current_user), many=True)
 
 
 @blueprint.route('', methods=['PUT'])
 @login_required
-def create():
+def create_one_on_one():
     if not request.is_json:
         return bad_request()
 
@@ -47,7 +47,7 @@ def create():
 
 @blueprint.route('/<_id>', methods=['GET'])
 @login_required
-def get(_id: int):
+def get_one_on_one(_id: int):
     one_on_one = OneOnOne.get(_id)
 
     if not one_on_one:
@@ -59,9 +59,26 @@ def get(_id: int):
     return get_one_on_one_schema.jsonify(one_on_one)
 
 
+@login_required
+@blueprint.route('/<_id>', methods=['DELETE'])
+def delete_one_on_one(_id: int):
+    one_on_one = OneOnOne.get(_id)
+
+    if not one_on_one:
+        return not_found()
+
+    if not acl.can_delete_one_on_one(one_on_one):
+        return unauthorized()
+
+    with transaction():
+        db.session.remove(one_on_one)
+
+    return no_content()
+
+
 @blueprint.route('/<one_on_one_id>/action_items', methods=['GET'])
 @login_required
-def get_action_items(one_on_one_id: int):
+def list_action_items(one_on_one_id: int):
     one_on_one = OneOnOne.get(one_on_one_id)
 
     if not one_on_one:
@@ -173,20 +190,3 @@ def edit_action_item(one_on_one_id: int, action_item_id: int):
         return one_on_one_action_item_schema.jsonify(action_item)
     except ValidationError as e:
         return validation_error(e.messages)
-
-
-@blueprint.route('/<_id>', methods=['DELETE'])
-@login_required
-def delete_one_on_one(_id: int):
-    one_on_one = OneOnOne.get(_id)
-
-    if not one_on_one:
-        return not_found()
-
-    if not acl.can_delete_one_on_one(one_on_one):
-        return unauthorized()
-
-    with transaction():
-        db.session.remove(one_on_one)
-
-    return no_content()
