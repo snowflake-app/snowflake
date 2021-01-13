@@ -7,35 +7,12 @@ info:
 servers:
   - url: /
 
+tags:
+  - name: 1-on-1
+  - name: Appreciation
+  - name: Users
+
 components:
-  responses:
-    NotFound:
-      description: 'Not found'
-      content:
-        'application/json':
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: 'Not found'
-
-    BadRequest:
-      description: 'Bad request'
-      content:
-        'application/json':
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: 'Bad request'
-
-    PermissionDenied:
-      description: 'Permission denied'
-      content:
-        'application/json':
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: 'Permission denied'
-
   schemas:
     Error:
       type: object
@@ -83,6 +60,18 @@ components:
         created_by:
           $ref: '#/components/schemas/User'
 
+    CreateOrEditOneOnOneActionItem:
+      type: object
+      properties:
+        state:
+          type: boolean
+          example: false
+          required: true
+        content:
+          type: string
+          example: 'This is an action item'
+          required: true
+
     OneOnOne:
       type: object
       properties:
@@ -113,11 +102,127 @@ components:
       properties:
         user:
           type: string
+          required: true
+
+    Appreciation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123456
+        content:
+          type: string
+          example: 'Hello @john.doe! Welcome to the hub'
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-11T22:40:08+05:30Z'
+        created_by:
+          $ref: '#/components/schemas/User'
+        mentions:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        like_count:
+          type: integer
+          example: 10
+        comment_count:
+          type: integer
+          example: 5
+        viewer_like:
+          $ref: '#/components/schemas/Like'
+
+    CreateOrEditAppreciation:
+      type: object
+      properties:
+        content:
+          type: string
+          example: 'Hello @john.doe! Welcome to the hub'
+
+    Like:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123345
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-11T22:40:08+05:30Z'
+        created_by:
+          $ref: '#/components/schemas/User'
+
+    Comment:
+      type: object
+      properties:
+        content:
+          type: string
+          example: 'Thank you'
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-11T22:40:08+05:30Z'
+        created_by:
+          $ref: '#/components/schemas/User'
+        mentions:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    CreateOrUpdateComment:
+      type: object
+      properties:
+        content:
+          type: string
+          example: 'Thank you'
+
+  requestBodies:
+    CreateOrUpdateAppreciation:
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/CreateOrEditAppreciation'
+
+    CreateOrUpdateComment:
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/CreateOrUpdateComment'
+
+  responses:
+    NotFound:
+      description: 'Not found'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Not found'
+
+    BadRequest:
+      description: 'Bad request'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Bad request'
+
+    PermissionDenied:
+      description: 'Permission denied'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Permission denied'
 
 paths:
   '/users/_autocomplete':
     get:
       summary: 'Autocomplete'
+      tags:
+        - Users
       responses:
         '200':
           description: 'OK'
@@ -131,6 +236,8 @@ paths:
   '/one_on_ones':
     get:
       summary: 'Get One on Ones'
+      tags:
+        - 1-on-1
       responses:
         '200':
           description: 'OK'
@@ -142,6 +249,8 @@ paths:
                   $ref: '#/components/schemas/OneOnOne'
     put:
       summary: 'Create one on one'
+      tags:
+        - 1-on-1
       requestBody:
         content:
           'application/json':
@@ -159,7 +268,6 @@ paths:
         '403':
           $ref: '#/components/responses/PermissionDenied'
 
-
   '/one_on_ones/{id}':
     parameters:
       - in: path
@@ -169,6 +277,8 @@ paths:
         required: true
     get:
       summary: 'Get one on one by ID'
+      tags:
+        - 1-on-1
       responses:
         '200':
           description: 'OK'
@@ -183,6 +293,8 @@ paths:
 
     delete:
       summary: 'Delete one on one by ID'
+      tags:
+        - 1-on-1
       responses:
         '204':
           description: 'OK'
@@ -190,3 +302,331 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/PermissionDenied'
+
+  '/one_on_ones/{id}/action_items':
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'List action items'
+      tags:
+        - 1-on-1
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OneOnOneActionItem'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: 'Create action item'
+      tags:
+        - 1-on-1
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateOrEditOneOnOneActionItem'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OneOnOneActionItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/one_on_ones/{one_on_one_id}/action_items/{action_item_id}':
+    parameters:
+      - in: path
+        name: one_on_one_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: action_item_id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'Get action item'
+      tags:
+        - 1-on-1
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OneOnOneActionItem'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: 'Edit action item'
+      tags:
+        - 1-on-1
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateOrEditOneOnOneActionItem'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OneOnOneActionItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: 'Delete action item'
+      tags:
+        - 1-on-1
+      responses:
+        '204':
+          description: 'OK'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/appreciations':
+    get:
+      summary: List all appreciations
+      tags:
+        - Appreciations
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appreciation'
+    put:
+      summary: 'Create appreciation'
+      tags:
+        - Appreciations
+      requestBody:
+        $ref: '#/components/requestBodies/CreateOrUpdateAppreciation'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Appreciation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+
+  '/appreciations/{appreciation_id}':
+    parameters:
+      - in: path
+        name: appreciation_id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'Get appreciation'
+      tags:
+        - Appreciation
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Appreciation'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: 'Edit appreciation'
+      tags:
+        - Appreciation
+      requestBody:
+        $ref: '#/components/requestBodies/CreateOrUpdateAppreciation'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Appreciation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: 'Delete appreciation'
+      tags:
+        - Appreciation
+      responses:
+        '204':
+          description: 'No content'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/appreciations/{appreciation_id}/likes':
+    parameters:
+      - in: path
+        name: appreciation_id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'Get likes'
+      tags:
+        - Appreciations
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Like'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: 'Like'
+      tags:
+        - Appreciations
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Like'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/appreciations/{appreciation_id}/likes/{like_id}':
+    parameters:
+      - in: path
+        name: appreciation_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: like_id
+        schema:
+          type: integer
+        required: true
+    delete:
+      summary: 'Unlike'
+      tags:
+        - Appreciations
+      responses:
+        '204':
+          description: 'OK'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/appreciations/{appreciation_id}/comments':
+    parameters:
+      - in: path
+        name: appreciation_id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'Get comments'
+      tags:
+        - Appreciations
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: 'Add a comment'
+      tags:
+        - Appreciations
+      requestBody:
+        $ref: '#/components/requestBodies/CreateOrUpdateComment'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/appreciations/{appreciation_id}/comments/{comment_id}':
+    parameters:
+      - in: path
+        name: appreciation_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+    delete:
+      summary: 'Delete comment'
+      tags:
+        - Appreciations
+      responses:
+        '204':
+          description: 'OK'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
