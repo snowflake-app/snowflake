@@ -4,6 +4,8 @@ import requests
 from flask import Flask
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+REDIS_URL = os.getenv('REDIS_URL')
+TOKEN_VALIDITY_SECS = int(os.getenv('TOKEN_VALIDITY_SECS'))
 
 
 def init_app(app: Flask):

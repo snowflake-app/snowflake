@@ -1,14 +1,16 @@
 import json
 
 from dotenv import load_dotenv
-from flask import Flask, url_for
+from flask import Flask, url_for, abort, Request
 from flask_login import LoginManager
 
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
+from .controllers.api.response import bad_request
 from .db import db
 from .marshmallow import marshmallow
 from .models import User
+from .services import token_manager
 
 load_dotenv()
 logger.setup()
@@ -25,12 +27,28 @@ login_manager.login_view = "login.login"
 login_manager.login_message_category = "danger"
 login_manager.needs_refresh_message_category = "danger"
 
+
+@login_manager.request_loader
+def load_user_from_header(request: Request):
+    authorization_value = request.headers.get('Authorization')
+    if not authorization_value:
+        return None
+
+    scheme, token = authorization_value.split(' ', 1)
+
+    if scheme != 'Bearer':
+        abort(400, bad_request('Malformed authorization'))
+
+    return token_manager.load_user(token)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
 
 app.register_blueprint(index.blueprint)
+app.register_blueprint(api.token.blueprint, url_prefix="/api/tokens")
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
 app.register_blueprint(api.notifications.blueprint, url_prefix="/api/notifications")
 app.register_blueprint(login.blueprint, url_prefix="/login")
