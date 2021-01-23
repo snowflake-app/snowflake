@@ -22,6 +22,8 @@ flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 marshmallow = "*"
+google-auth = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"

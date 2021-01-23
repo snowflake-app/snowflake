@@ -11,14 +11,14 @@ blueprint = Blueprint('api.notifications', __name__)
 schema = NotificationSchema()
 
 
-@login_required
 @blueprint.route('/_count')
+@login_required
 def notification_count():
     return jsonify(Notification.count_unread_by_user(current_user))
 
 
-@login_required
 @blueprint.route('/<_id>/mark_as_read', methods=['POST'])
+@login_required
 def mark_as_read(_id):
     n = Notification.get(_id)
     if not n:
@@ -31,7 +31,7 @@ def mark_as_read(_id):
     return schema.jsonify(n)
 
 
+@blueprint.route('/introspect', methods=['GET'])
 @login_required
-@blueprint.route('')
 def notification():
     return schema.jsonify(Notification.get_by_user(current_user), many=True)
