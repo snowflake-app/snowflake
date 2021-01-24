@@ -1,17 +1,14 @@
 import json
 
 from dotenv import load_dotenv
-from flask import Flask, url_for, abort, Request, g
-from flask_login import LoginManager, user_loaded_from_header
+from flask import Flask, url_for
 
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
-from .controllers.api.response import bad_request
 from .db import db
 from .marshmallow import marshmallow
-from .models import User
 from .redis import redis
-from .services import token_manager
+from .services import login_manager
 from .services.session_interface import CustomSessionInterface
 
 load_dotenv()
@@ -23,31 +20,7 @@ db.init_app(app)
 settings.init_app(app)
 marshmallow.init_app(app)
 
-login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login.login"
-login_manager.login_message_category = "danger"
-login_manager.needs_refresh_message_category = "danger"
-
-
-@login_manager.request_loader
-def load_user_from_header(r: Request):
-    authorization_value = r.headers.get('Authorization')
-    if not authorization_value:
-        return None
-
-    scheme, token = authorization_value.split(' ', 1)
-
-    if scheme != 'Bearer':
-        abort(400, bad_request('Malformed authorization'))
-
-    return token_manager.load_user(token)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
 
 app.register_blueprint(index.blueprint)
 app.register_blueprint(api.token.blueprint, url_prefix="/api/tokens")
@@ -66,11 +39,6 @@ app.add_template_filter(filters.iso_time)
 app.add_template_filter(filters.add_mentions)
 
 app.session_interface = CustomSessionInterface(key_prefix='session', redis=redis)
-
-
-@user_loaded_from_header.connect
-def user_loaded_from_header(*_):
-    g.login_via_header = True
 
 
 @app.context_processor
