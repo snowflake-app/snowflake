@@ -24,6 +24,8 @@ marshmallow-sqlalchemy = "*"
 marshmallow = "*"
 google-auth = "*"
 redis = "*"
+flask-session = "*"
+blinker = "*"
 
 [requires]
 python_version = "3.8"

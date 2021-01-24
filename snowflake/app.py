@@ -1,8 +1,8 @@
 import json
 
 from dotenv import load_dotenv
-from flask import Flask, url_for, abort, Request
-from flask_login import LoginManager
+from flask import Flask, url_for, abort, Request, g
+from flask_login import LoginManager, user_loaded_from_header
 
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
@@ -10,7 +10,9 @@ from .controllers.api.response import bad_request
 from .db import db
 from .marshmallow import marshmallow
 from .models import User
+from .redis import redis
 from .services import token_manager
+from .services.session_interface import CustomSessionInterface
 
 load_dotenv()
 logger.setup()
@@ -29,8 +31,8 @@ login_manager.needs_refresh_message_category = "danger"
 
 
 @login_manager.request_loader
-def load_user_from_header(request: Request):
-    authorization_value = request.headers.get('Authorization')
+def load_user_from_header(r: Request):
+    authorization_value = r.headers.get('Authorization')
     if not authorization_value:
         return None
 
@@ -62,6 +64,13 @@ app.register_blueprint(logout.blueprint, url_prefix="/logout")
 app.add_template_filter(filters.humanize_time)
 app.add_template_filter(filters.iso_time)
 app.add_template_filter(filters.add_mentions)
+
+app.session_interface = CustomSessionInterface(key_prefix='session', redis=redis)
+
+
+@user_loaded_from_header.connect
+def user_loaded_from_header(*_):
+    g.login_via_header = True
 
 
 @app.context_processor
