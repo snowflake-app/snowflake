@@ -19,3 +19,7 @@ def load_user(token: str):
         return None
 
     return User.get(user_id)
+
+
+def revoke(token):
+    token_repository.delete(token)

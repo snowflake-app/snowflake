@@ -16,3 +16,7 @@ def get(key):
         return None
 
     return value.decode('utf-8')
+
+
+def delete(key: str):
+    return redis.delete(__with_prefix(key))
