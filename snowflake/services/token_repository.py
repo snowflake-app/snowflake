@@ -1,8 +1,4 @@
-from redis import Redis
-
-from .. import settings
-
-redis = Redis.from_url(settings.REDIS_URL)
+from ..redis import redis
 
 
 def __with_prefix(key):

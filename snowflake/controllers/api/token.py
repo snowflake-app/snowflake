@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
-from .response import unauthorized
+from .response import forbidden
 from ...models import User
 from ...schemas.login import LoginSchema, LoginResponseSchema
 from ...services import google_auth, token_manager
@@ -20,7 +20,7 @@ def login():
     user = User.get(user_info.id)
 
     if not user:
-        return unauthorized()
+        return forbidden()
 
     token = token_manager.create(user)
 

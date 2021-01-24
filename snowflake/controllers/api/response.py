@@ -13,5 +13,9 @@ def not_found(message="Not found"):
     return error_body(message), 404
 
 
-def unauthorized(message="Unauthorized"):
+def forbidden(message="Forbidden"):
     return jsonify(message), 403
+
+
+def unauthorized(message="Unauthorized"):
+    return jsonify(message), 401
