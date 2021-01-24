@@ -16,8 +16,8 @@ logger.setup()
 
 app = Flask(__name__)
 
-db.init_app(app)
 settings.init_app(app)
+db.init_app(app)
 marshmallow.init_app(app)
 
 login_manager.init_app(app)
