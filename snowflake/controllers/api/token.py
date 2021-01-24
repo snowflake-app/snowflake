@@ -38,3 +38,12 @@ def introspect():
         'token': token,
         'user': current_user
     })
+
+
+@blueprint.route('', methods=['DELETE'])
+@login_required
+def logout():
+    _, token = request.headers.get('Authorization').split(' ', 1)
+    token_manager.revoke(token)
+
+    return "", 204
