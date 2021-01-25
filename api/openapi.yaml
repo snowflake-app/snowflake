@@ -27,6 +27,15 @@ components:
           example:
             message: 'Bad request'
 
+    PermissionDenied:
+      description: 'Permission denied'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: 'Permission denied'
+
   schemas:
     Error:
       type: object
@@ -40,21 +49,73 @@ components:
         name:
           type: string
           maxLength: 255
+          example: 'John Doe'
         designation:
           type: string
+          example: 'Manager'
         team_name:
           type: string
+          example: 'Sales'
         email:
           type: string
           format: email
+          example: 'john.doe@example.com'
         profile_pic:
           type: string
           format: url
+          example: 'https://cdn.example.com/images/dcd1674d3ddf42a59817202f.jpg'
         username:
+          type: string
+          example: 'john.doe'
+
+    OneOnOneActionItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 995296
+        state:
+          type: boolean
+          example: false
+        content:
+          type: string
+          example: 'This is an action item'
+        created_by:
+          $ref: '#/components/schemas/User'
+
+    OneOnOne:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 261993
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-11T22:40:08+05:30Z'
+        created_by:
+          $ref: '#/components/schemas/User'
+        user:
+          $ref: '#/components/schemas/User'
+
+    OneOnOneDetail:
+      allOf:
+        - $ref: '#/components/schemas/OneOnOne'
+        - type: object
+          properties:
+            action_items:
+              type: array
+              items:
+                - $ref: '#/components/schemas/OneOnOneActionItem'
+
+    CreateOneOnOne:
+      type: object
+      properties:
+        user:
           type: string
 
 paths:
-  '/v1/users/_autocomplete':
+  '/users/_autocomplete':
     get:
       summary: 'Autocomplete'
       responses:
@@ -66,3 +127,66 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequest'
+
+  '/one_on_ones':
+    get:
+      summary: 'Get One on Ones'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OneOnOne'
+    put:
+      summary: 'Create one on one'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateOneOnOne'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OneOnOneDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+
+
+  '/one_on_ones/{id}':
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: 'Get one on one by ID'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OneOnOneDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+
+    delete:
+      summary: 'Delete one on one by ID'
+      responses:
+        '204':
+          description: 'OK'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
