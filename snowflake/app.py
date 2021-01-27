@@ -22,6 +22,7 @@ marshmallow.init_app(app)
 
 login_manager.init_app(app)
 
+app.register_blueprint(api.healthcheck.blueprint, url_prefix="/api/healthcheck")
 app.register_blueprint(index.blueprint)
 app.register_blueprint(api.token.blueprint, url_prefix="/api/tokens")
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
