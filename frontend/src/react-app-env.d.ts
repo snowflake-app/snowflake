@@ -5,7 +5,7 @@ declare global {
   namespace JSX {
     // noinspection JSUnusedGlobalSymbols
     interface IntrinsicElements {
-      'ion-icon': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { name: string, size?: string }; // Normal web component
+      'ion-icon': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { name: string, size?: string, class?: string }; // Normal web component
     }
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import LoginPage from "./LoginPage";
-import HomePage from "./HomePage";
+import Snowflake from "./Snowflake";
 import ProtectedRoute from "./ProtectedRoute";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {AuthProvider} from "../hooks/use-auth";
@@ -18,7 +18,7 @@ export default function App() {
               <LoginPage/>
             </Route>
             <ProtectedRoute exact={true} path="/">
-              <HomePage/>
+              <Snowflake/>
             </ProtectedRoute>
           </Switch>
         </BrowserRouter>

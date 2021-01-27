@@ -44,12 +44,11 @@ export default function LoginPage() {
     });
   };
 
-  // noinspection CheckTagEmptyBody
   return (
     <div className={styles.loginPage}>
       <div className="box has-text-centered p-6">
         <p className="is-size-1 mb-4 has-text-primary">
-          <ion-icon name="snow-outline"></ion-icon>
+          <ion-icon name="snow-outline"/>
         </p>
         <h1 className="title">Welcome to Snowflake!</h1>
         <p className="subtitle block my-4">You can sign in with SSO, using your work email address</p>
