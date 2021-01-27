@@ -5,7 +5,6 @@ from flask import Flask, url_for
 
 from . import filters, settings, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
-from .controllers.api import healthcheck
 from .db import db
 from .marshmallow import marshmallow
 from .redis import redis
@@ -23,6 +22,7 @@ marshmallow.init_app(app)
 
 login_manager.init_app(app)
 
+app.register_blueprint(api.healthcheck.blueprint, url_prefix="/api/healthcheck")
 app.register_blueprint(index.blueprint)
 app.register_blueprint(api.token.blueprint, url_prefix="/api/tokens")
 app.register_blueprint(api.users.blueprint, url_prefix="/api/users")
@@ -34,7 +34,6 @@ app.register_blueprint(one_on_one.blueprint, url_prefix="/1-on-1s")
 app.register_blueprint(appreciation.blueprint)
 app.register_blueprint(notifications.blueprint, url_prefix="/notifications")
 app.register_blueprint(logout.blueprint, url_prefix="/logout")
-app.register_blueprint(healthcheck.blueprint, url_prefix="/healthcheck")
 
 app.add_template_filter(filters.humanize_time)
 app.add_template_filter(filters.iso_time)

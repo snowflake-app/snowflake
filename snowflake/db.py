@@ -13,3 +13,7 @@ def transaction():
     except Exception:
         db.session.rollback()
         raise
+
+
+def health_check():
+    db.session.execute("select 1")

@@ -1,8 +1,12 @@
-from flask import jsonify
+from flask import jsonify, Blueprint
 
-from snowflake.controllers.index import blueprint
+from ... import db, redis
+
+blueprint = Blueprint('api.healthcheck', __name__)
 
 
-@blueprint.route('/healthcheck')
-def check_status(message):
-    return jsonify({'message': 'message'}), 200
+@blueprint.route('')
+def check_status():
+    db.health_check()
+    redis.health_check()
+    return jsonify({'message': 'OK'}), 200
