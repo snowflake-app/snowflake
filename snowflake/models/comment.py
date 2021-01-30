@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from .appreciation import Appreciation
 from ..db import db
 
 
@@ -13,7 +12,7 @@ class Comment(db.Model):
     created_by = db.relationship('User')
 
     appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
-    appreciation: Appreciation = db.relationship('Appreciation')
+    appreciation = db.relationship('Appreciation')
 
     @staticmethod
     def create(comment):
