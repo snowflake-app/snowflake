@@ -1,14 +1,14 @@
 from marshmallow.fields import String, DateTime, Nested
 
+from .base import BaseSchema
 from .user import UserSchema
-from ..marshmallow import marshmallow
 
 
-class LoginSchema(marshmallow.Schema):
+class LoginSchema(BaseSchema):
     token = String()
 
 
-class LoginResponseSchema(marshmallow.Schema):
+class LoginResponseSchema(BaseSchema):
     token = String()
     expiry = DateTime()
     refresh_token = String()

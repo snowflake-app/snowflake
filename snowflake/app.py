@@ -1,6 +1,5 @@
 import json
 
-from dotenv import load_dotenv
 from flask import Flask, url_for
 
 from . import filters, settings, logger
@@ -11,7 +10,6 @@ from .redis import redis
 from .services import login_manager
 from .services.session_interface import CustomSessionInterface
 
-load_dotenv()
 logger.setup()
 
 app = Flask(__name__)
