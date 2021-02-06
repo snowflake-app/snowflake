@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginPage from "./LoginPage";
+import LoginPage from "./login/LoginPage";
 import Snowflake from "./Snowflake";
 import ProtectedRoute from "./ProtectedRoute";
 import {BrowserRouter, Route, Switch} from "react-router-dom";

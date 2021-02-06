@@ -3,9 +3,9 @@ import {GoogleLogin} from 'react-google-login';
 
 import styles from './LoginPage.module.css';
 import {useHistory, useLocation} from "react-router-dom";
-import {useAlerts} from "../hooks/use-alerts";
-import googleLogo from "../images/google-logo.svg";
-import {useAuth} from "../hooks/use-auth";
+import {useAlerts} from "../../hooks/use-alerts";
+import googleLogo from "../../images/google-logo.svg";
+import {useAuth} from "../../hooks/use-auth";
 
 export default function LoginPage() {
   const history = useHistory();
