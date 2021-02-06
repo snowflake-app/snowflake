@@ -11,6 +11,7 @@ $link: $orange;
 html, body, #root, .viewport {
   width: 100%;
   height: 100%;
+  overflow: auto;
 }
 
 body {
@@ -26,4 +27,27 @@ body {
 
 .tag.is-small {
   font-size: .5rem;
+}
+
+.m-auto {
+  margin: auto;
+}
+
+.clear-button {
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.post-action-button {
+  ion-icon {
+    font-size: 1.25rem;
+    pointer-events: none;
+  }
+}
+
+.participants-avatar:not(:first-child) {
+  margin-left: -1rem;
 }

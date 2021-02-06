@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {notificationCount} from "../../lib/notifications";
+import {notificationCount} from "../../lib/api";
 import styles from './Notifications.module.css';
 
 export function Notifications() {

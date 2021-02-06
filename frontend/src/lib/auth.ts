@@ -3,9 +3,9 @@ import axios from "axios";
 export type User = {
   readonly name: string,
   readonly designation: string,
-  readonly team_name: string,
+  readonly teamName: string,
   readonly email: string,
-  readonly profile_pic: string,
+  readonly profilePic: string,
   readonly username: string,
 }
 
