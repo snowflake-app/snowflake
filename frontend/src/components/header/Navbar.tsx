@@ -27,8 +27,8 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-end">
-          <NavbarMenuItem to="/" icon="home-outline" label="Feed"/>
-          <NavbarMenuItem to="/" icon="people-outline" label="1-on-1s"/>
+          <NavbarMenuItem to="/feed" icon="home-outline" label="Feed"/>
+          <NavbarMenuItem to="/1-on-1s" icon="people-outline" label="1-on-1s"/>
           <NavbarMenuItem to="/" icon="rocket-outline" label="Personal objectives"/>
           <Notifications/>
           <ProfileDropdownMenu/>

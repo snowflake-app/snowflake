@@ -25,6 +25,24 @@ export type Appreciation = {
   viewerLike: Like
 }
 
+export type OneOnOne = {
+  id: number,
+  user: User,
+  createdAt: string,
+  createdBy: User
+}
+
+export type OneOnOneActionItem = {
+  id: number,
+  state: boolean
+  content: string
+  createdBy: User
+}
+
+export type OneOnOneDetail = OneOnOne & {
+  actionItems: OneOnOneActionItem[]
+}
+
 async function get<T>(url: string): Promise<T> {
   const response = await axios.get(url, {
     headers: authorizationHeaders()
@@ -47,4 +65,12 @@ export async function appreciationComments(id: number): Promise<Comment[]> {
 
 export async function appreciationLikes(id: number): Promise<Like[]> {
   return get(`/api/appreciations/${id}/likes`);
+}
+
+export async function oneOnOnes(): Promise<OneOnOne[]> {
+  return get("/api/one_on_ones")
+}
+
+export async function oneOnOneById(id: number | string): Promise<OneOnOneDetail> {
+  return get(`/api/one_on_ones/${id}`)
 }

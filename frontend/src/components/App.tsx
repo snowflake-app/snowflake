@@ -14,10 +14,10 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Switch>
-            <Route path="/login">
+            <Route exact={true} path="/login">
               <LoginPage/>
             </Route>
-            <ProtectedRoute exact={true} path="/">
+            <ProtectedRoute path="/">
               <Snowflake/>
             </ProtectedRoute>
           </Switch>
