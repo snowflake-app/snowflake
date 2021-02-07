@@ -29,7 +29,7 @@ export default function Navbar() {
         <div className="navbar-end">
           <NavbarMenuItem to="/feed" icon="home-outline" label="Feed"/>
           <NavbarMenuItem to="/1-on-1s" icon="people-outline" label="1-on-1s"/>
-          <NavbarMenuItem to="/" icon="rocket-outline" label="Personal objectives"/>
+          <NavbarMenuItem to="/personal-objectives" icon="rocket-outline" label="Personal objectives"/>
           <Notifications/>
           <ProfileDropdownMenu/>
         </div>
