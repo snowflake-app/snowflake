@@ -47,7 +47,7 @@ def one_on_one_action_item():
 
     if form.validate():
         o = OneOnOne.get(form.one_on_one.data)
-        action_item = OneOnOneActionItem(content=form.content.data, one_on_one=o, created_by=current_user, state=0)
+        action_item = OneOnOneActionItem(content=form.content.data, one_on_one=o, created_by=current_user, state=False)
 
         OneOnOneActionItem.create(action_item)
 

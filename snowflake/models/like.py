@@ -1,12 +1,26 @@
+from datetime import datetime
+
 from ..db import db
 
 
 class Like(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('likes', lazy=True))
+
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
+
+    created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
+    created_by = db.relationship('User', backref=db.backref('likes', lazy=True))
+
     appreciation_id = db.Column(db.String, db.ForeignKey('appreciation.id'), nullable=False)
     appreciation = db.relationship('Appreciation')
+
+    @property
+    def user_id(self):
+        return self.created_by_id
+
+    @property
+    def user(self):
+        return self.created_by
 
     @staticmethod
     def create(like):

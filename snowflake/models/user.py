@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_login import UserMixin
 
 from ..db import db
@@ -11,6 +13,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String)
     profile_pic = db.Column(db.String)
     username = db.Column(db.String(255))
+
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
 
     @staticmethod
     def get(user_id):

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from . import Comment
 from .appreciation import Appreciation
 from .one_on_one import OneOnOne
@@ -15,10 +17,11 @@ TYPE_COMMENT_ON_APPRECIATION_COMMENTED = "comment_on_appreciation_commented"
 class Notification(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
 
     user_id = db.Column(db.String, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('notifications', lazy=True))
+
     type = db.Column(db.String)
     object_id = db.Column(db.String)
     read = db.Column(db.Boolean, default=False)
