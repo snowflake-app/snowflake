@@ -51,26 +51,30 @@ async function get<T>(url: string): Promise<T> {
   return response.data
 }
 
-export async function appreciations(): Promise<Appreciation[]> {
+export function appreciations(): Promise<Appreciation[]> {
   return get("/api/appreciations");
 }
 
-export async function notificationCount(): Promise<number> {
+export function notificationCount(): Promise<number> {
   return get("/api/notifications/_count");
 }
 
-export async function appreciationComments(id: number): Promise<Comment[]> {
+export function appreciationComments(id: number): Promise<Comment[]> {
   return get(`/api/appreciations/${id}/comments`);
 }
 
-export async function appreciationLikes(id: number): Promise<Like[]> {
+export function appreciationLikes(id: number): Promise<Like[]> {
   return get(`/api/appreciations/${id}/likes`);
 }
 
-export async function oneOnOnes(): Promise<OneOnOne[]> {
+export function oneOnOnes(): Promise<OneOnOne[]> {
   return get("/api/one_on_ones")
 }
 
-export async function oneOnOneById(id: number | string): Promise<OneOnOneDetail> {
+export function oneOnOneById(id: number | string): Promise<OneOnOneDetail> {
   return get(`/api/one_on_ones/${id}`)
+}
+
+export function userByUsername(username: string): Promise<User> {
+  return get(`/api/users/${username}`)
 }

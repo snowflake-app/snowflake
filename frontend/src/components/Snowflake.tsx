@@ -4,6 +4,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import FeedPage from "./feed/FeedPage";
 import styles from './Snowflake.module.css';
 import OneOnOnesPage from "./one-on-ones/OneOnOnesPage";
+import ProfilePage from "./profile/ProfilePage";
 
 export default function Snowflake() {
   return (
@@ -16,6 +17,7 @@ export default function Snowflake() {
           </Route>
           <Route path="/feed" component={FeedPage}/>
           <Route path="/1-on-1s" component={OneOnOnesPage}/>
+          <Route path="/profile/:username" component={ProfilePage}/>
         </Switch>
       </div>
     </>
