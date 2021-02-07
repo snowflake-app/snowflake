@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from snowflake.db import db
 
 
@@ -11,6 +13,8 @@ class OneOnOneActionItem(db.Model):
 
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     created_by = db.relationship('User')
+
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
 
     @staticmethod
     def create(action_item):

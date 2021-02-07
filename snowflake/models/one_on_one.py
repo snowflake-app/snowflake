@@ -1,11 +1,15 @@
+from datetime import datetime
+
 from ..db import db
 
 
 class OneOnOne(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
+
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'))
     created_by = db.relationship('User', foreign_keys=[created_by_id])
+
     user_id = db.Column(db.String, db.ForeignKey('user.id'))
     user = db.relationship('User', foreign_keys=[user_id])
 

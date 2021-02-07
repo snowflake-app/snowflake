@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .like import Like
 from .user import User
 from ..db import db
@@ -7,7 +9,8 @@ class Appreciation(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
     content = db.Column(db.Text)
-    created_at = db.Column(db.DateTime)
+
+    created_at = db.Column(db.DateTime, lambda _: datetime.now())
 
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'))
     created_by = db.relationship('User', backref=db.backref('appreciations', lazy=True))

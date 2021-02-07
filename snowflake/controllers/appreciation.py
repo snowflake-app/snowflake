@@ -23,7 +23,7 @@ def appreciate():
             user = User.get_by_username(mention[1:])
             if user is None:
                 continue
-            m = Mention(user=user, appreciation=appreciation)
+            m = Mention(user=user, appreciation=appreciation, created_by=current_user)
             Mention.create(m)
 
         notification.notify_appreciation(appreciation)
@@ -39,7 +39,7 @@ def like():
     if current_user.is_authenticated and form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
-        l = Like(appreciation=appreciation, user=current_user)
+        l = Like(appreciation=appreciation, created_by=current_user)
         Like.create(l)
 
         return redirect(url_for('index.index'))
@@ -54,7 +54,10 @@ def comment():
     if form.validate():
         appreciation = Appreciation.get(form.appreciation.data)
 
-        c = Comment(appreciation=appreciation, user=current_user, content=form.content.data, created_at=datetime.now())
+        c = Comment(appreciation=appreciation,
+                    created_by=current_user,
+                    content=form.content.data,
+                    created_at=datetime.now())
         Comment.create(c)
 
         notification.notify_comment(c)
