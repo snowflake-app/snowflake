@@ -1,13 +1,14 @@
 from marshmallow.fields import List
 from marshmallow_sqlalchemy.fields import Nested
 
+from .base import BaseSQLAlchemySchema
 from .fields import UserByUsername
 from .user import UserSchema
 from ..marshmallow import marshmallow
 from ..models import OneOnOne, OneOnOneActionItem
 
 
-class OneOnOneActionItemSchema(marshmallow.SQLAlchemySchema):
+class OneOnOneActionItemSchema(BaseSQLAlchemySchema):
     class Meta:
         model = OneOnOneActionItem
 
@@ -18,7 +19,7 @@ class OneOnOneActionItemSchema(marshmallow.SQLAlchemySchema):
     created_by = Nested(UserSchema)
 
 
-class CreateOrEditOneOnOneActionItemSchema(marshmallow.SQLAlchemySchema):
+class CreateOrEditOneOnOneActionItemSchema(BaseSQLAlchemySchema):
     class Meta:
         model = OneOnOneActionItem
         load_instance = True
@@ -27,7 +28,7 @@ class CreateOrEditOneOnOneActionItemSchema(marshmallow.SQLAlchemySchema):
     content = marshmallow.auto_field()
 
 
-class OneOnOneSchema(marshmallow.SQLAlchemySchema):
+class OneOnOneSchema(BaseSQLAlchemySchema):
     class Meta:
         model = OneOnOne
 
@@ -41,7 +42,7 @@ class GetOneOnOneSchema(OneOnOneSchema):
     action_items = List(Nested(OneOnOneActionItemSchema))
 
 
-class CreateOneOnOneSchema(marshmallow.SQLAlchemySchema):
+class CreateOneOnOneSchema(BaseSQLAlchemySchema):
     class Meta:
         model = OneOnOne
         load_instance = True

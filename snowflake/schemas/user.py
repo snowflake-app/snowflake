@@ -1,8 +1,8 @@
-from ..marshmallow import marshmallow
+from .base import BaseSQLAlchemyAutoSchema
 from ..models import User
 
 
-class UserSchema(marshmallow.SQLAlchemyAutoSchema):
+class UserSchema(BaseSQLAlchemyAutoSchema):
     class Meta:
         model = User
         exclude = ("id",)

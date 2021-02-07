@@ -1,7 +1,10 @@
 import os
 
 import requests
+from dotenv import load_dotenv
 from flask import Flask
+
+load_dotenv()
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 REDIS_URL = os.getenv('REDIS_URL')
