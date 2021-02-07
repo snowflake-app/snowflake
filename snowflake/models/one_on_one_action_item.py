@@ -14,8 +14,7 @@ class OneOnOneActionItem(db.Model):
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     created_by = db.relationship('User')
 
-    created_at = db.Column(db.DateTime, lambda _: datetime.now())
-
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     @staticmethod
     def create(action_item):
         db.session.add(action_item)

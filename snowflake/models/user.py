@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     profile_pic = db.Column(db.String)
     username = db.Column(db.String(255))
 
-    created_at = db.Column(db.DateTime, lambda _: datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     @staticmethod
     def get(user_id):

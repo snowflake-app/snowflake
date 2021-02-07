@@ -17,8 +17,7 @@ TYPE_COMMENT_ON_APPRECIATION_COMMENTED = "comment_on_appreciation_commented"
 class Notification(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
-    created_at = db.Column(db.DateTime, lambda _: datetime.now())
-
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.String, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('notifications', lazy=True))
 
