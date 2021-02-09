@@ -14,12 +14,13 @@ def app():
     yield flask_app
 
 
+time = datetime.now()
 user = User(id='12345', name='Hello', designation='Developer',
             team_name='Engineering', username='hello',
             email='hello@example.com',
+            created_at=time,
             profile_pic='https://example.com/picture.jpg')
 
-time = datetime.now()
 one_on_one = OneOnOne(
     id=1,
     created_by=user,
@@ -40,12 +41,15 @@ def test_one_on_one_action_item_schema():
 
     expected = {
         'content': 'hello',
-        'createdBy': {'designation': 'Developer',
-                      'email': 'hello@example.com',
-                      'name': 'Hello',
-                      'profilePic': 'https://example.com/picture.jpg',
-                      'teamName': 'Engineering',
-                      'username': 'hello'},
+        'createdBy': {
+            'designation': 'Developer',
+            'email': 'hello@example.com',
+            'name': 'Hello',
+            'profilePic': 'https://example.com/picture.jpg',
+            'teamName': 'Engineering',
+            'username': 'hello',
+            'createdAt': time.isoformat(),
+        },
         'id': 1,
         'state': True
     }
@@ -69,6 +73,7 @@ def test_one_on_one_schema():
     expected = {
         'createdAt': time.isoformat(),
         'createdBy': {
+            'createdAt': time.isoformat(),
             'designation': 'Developer',
             'email': 'hello@example.com',
             'name': 'Hello',
@@ -78,6 +83,7 @@ def test_one_on_one_schema():
         },
         'id': 1,
         'user': {
+            'createdAt': time.isoformat(),
             'designation': 'Developer',
             'email': 'hello@example.com',
             'name': 'Hello',
@@ -97,6 +103,7 @@ def test_get_one_on_one_schema():
             {
                 'content': 'hello',
                 'createdBy': {
+                    'createdAt': time.isoformat(),
                     'designation': 'Developer',
                     'email': 'hello@example.com',
                     'name': 'Hello',
@@ -109,6 +116,7 @@ def test_get_one_on_one_schema():
             {
                 'content': 'world',
                 'createdBy': {
+                    'createdAt': time.isoformat(),
                     'designation': 'Developer',
                     'email': 'hello@example.com',
                     'name': 'Hello',
@@ -127,10 +135,12 @@ def test_get_one_on_one_schema():
             'name': 'Hello',
             'profilePic': 'https://example.com/picture.jpg',
             'teamName': 'Engineering',
-            'username': 'hello'
+            'username': 'hello',
+            'createdAt': time.isoformat(),
         },
         'id': 1,
         'user': {
+            'createdAt': time.isoformat(),
             'designation': 'Developer',
             'email': 'hello@example.com',
             'name': 'Hello',

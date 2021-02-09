@@ -25,13 +25,14 @@ def test_login_schema_reads_correct_json():
 
 
 def test_login_response_schema_dumps_correct_json():
+    time = datetime.now()
     schema = LoginResponseSchema()
     user = User(id='12345', name='Hello', designation='Developer',
                 team_name='Engineering', username='hello',
                 email='hello@example.com',
+                created_at=time,
                 profile_pic='https://example.com/picture.jpg')
 
-    time = datetime.now()
     login = schema.dump({
         'token': '12345',
         'expiry': time,
@@ -49,7 +50,8 @@ def test_login_response_schema_dumps_correct_json():
             'teamName': 'Engineering',
             'username': 'hello',
             'email': 'hello@example.com',
-            'profilePic': 'https://example.com/picture.jpg'
+            'profilePic': 'https://example.com/picture.jpg',
+            'createdAt': time.isoformat()
         }
     }
 
