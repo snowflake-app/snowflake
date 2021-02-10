@@ -1,11 +1,10 @@
 from marshmallow import Schema
-from marshmallow.fields import Nested, DateTime
+from marshmallow.fields import Nested, DateTime, Str
 
 from .user import UserSchema
-from ..marshmallow import marshmallow
 
 
 class ObjectSchema(Schema):
-    id: marshmallow.auto_field()
+    id = Str()
     created_at = DateTime()
     created_by = Nested(UserSchema)

@@ -3,7 +3,8 @@ import json
 from flask import Flask, url_for
 
 from . import filters, settings, logger
-from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, notifications
+from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, \
+    notifications
 from .db import db
 from .marshmallow import marshmallow
 from .redis import redis
@@ -46,20 +47,17 @@ app.session_interface = CustomSessionInterface(key_prefix='session', redis=redis
 @app.context_processor
 def setup():
     def entrypoint(file: str):
-        with open(app.static_folder + "/assets/manifest.json") as f:
-            manifest = json.load(f)
+        with open(f"{app.static_folder}/assets/manifest.json") as manifest_file:
+            manifest = json.load(manifest_file)
             chunk = manifest[file]
 
             if app.debug:
                 return 'http://localhost:8080/' + chunk
-            else:
-                return url_for('static', filename='assets/' + chunk)
+
+            return url_for('static', filename='assets/' + chunk)
 
     def choose_plural(size, singular, plural):
-        if size != 1:
-            return plural
-        else:
-            return singular
+        return plural if size != 1 else singular
 
     return {
         'entrypoint': entrypoint,

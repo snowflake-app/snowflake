@@ -19,7 +19,8 @@ def register():
         username = users_email.split("@")[0]
 
         user = User(id=unique_id, email=users_email, name=full_name, profile_pic=picture,
-                    team_name=form.team_name.data, designation=form.designation.data, username=username)
+                    team_name=form.team_name.data, designation=form.designation.data,
+                    username=username)
 
         User.create(user)
 
@@ -27,4 +28,5 @@ def register():
 
         return redirect(url_for('index.index'))
 
-    return render_template('welcome.html', form=form, user_name=session['users_name'], picture=session['picture'])
+    return render_template('welcome.html', form=form, user_name=session['users_name'],
+                           picture=session['picture'])

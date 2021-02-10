@@ -1,8 +1,8 @@
 from ..marshmallow import marshmallow
 
 
-def camelcase(s):
-    parts = iter(s.split("_"))
+def camelcase(name):
+    parts = iter(name.split("_"))
     return next(parts) + "".join(i.title() for i in parts)
 
 

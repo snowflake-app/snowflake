@@ -1,15 +1,7 @@
 from datetime import datetime
 
-import pytest
-
-from snowflake import app as flask_app
 from snowflake.models import User
 from snowflake.schemas.user import UserSchema
-
-
-@pytest.fixture(scope="module", autouse=True)
-def app():
-    yield flask_app
 
 
 def test_user_schema_dumps_json_correctly():

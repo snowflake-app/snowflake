@@ -34,12 +34,15 @@ class Appreciation(db.Model):
         return Like.query.filter_by(appreciation=self).count()
 
     def get_comment_count(self):
-        return db.session.scalar('SELECT COUNT(*) FROM comment c WHERE c.appreciation_id = :id', {'id': self.id})
+        return db.session.scalar('SELECT COUNT(*) FROM comment c WHERE c.appreciation_id = :id',
+                                 {'id': self.id})
 
     def is_liked_by(self, user: User):
         return db.session.scalar(
-            'SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :appreciation_id'
-            ' AND l.user_id = :user_id',
+            '''
+            SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :appreciation_id
+            AND l.created_by_id = :user_id
+            ''',
             {'appreciation_id': self.id, 'user_id': user.id}) > 0
 
     @staticmethod
@@ -57,15 +60,16 @@ class Appreciation(db.Model):
     def most_appreciated():
         rows = db.session.execute(
             '''
-            SELECT user_id, COUNT(user_id) AS c FROM mention m JOIN "appreciation" a ON m.appreciation_id=a.id
-            WHERE a.created_at BETWEEN date_trunc('month', CURRENT_DATE) 
+            SELECT user_id, COUNT(user_id) AS c FROM mention m
+            JOIN "appreciation" a ON m.appreciation_id=a.id
+            WHERE a.created_at BETWEEN date_trunc('month', CURRENT_DATE)
             AND (date_trunc('month', CURRENT_DATE) + INTERVAL '1 month - 1 second')
             GROUP BY user_id ORDER BY c DESC LIMIT 5
             ''')
 
         result = []
 
-        for row in rows:
+        for row in rows:  # pylint: disable=not-an-iterable
             user = User.get(row[0])
 
             count = row[1]

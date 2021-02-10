@@ -1,7 +1,8 @@
 import json
 
 import requests
-from flask import Blueprint, request, url_for, session, redirect, render_template, current_app
+from flask import Blueprint, request, url_for, session, redirect, render_template, current_app, \
+    flash
 from flask_login import login_user
 from oauthlib.oauth2 import WebApplicationClient
 
@@ -52,40 +53,24 @@ def callback():
         auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),
     )
 
-    # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
 
-    # Now that you have tokens (yay) let's find and hit the URL
-    # from Google that gives you the user's profile information,
-    # including their Google profile image and email
-    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
-    uri, headers, body = client.add_token(userinfo_endpoint)
+    uri, headers, body = client.add_token(google_provider_cfg["userinfo_endpoint"])
     userinfo_response = requests.get(uri, headers=headers, data=body)
 
-    # You want to make sure their email is verified.
-    # The user authenticated with Google, authorized your
-    # app, and now you've verified their email through Google!
     if userinfo_response.json().get("email_verified"):
         unique_id = userinfo_response.json()["sub"]
-        users_email = userinfo_response.json()["email"]
-        picture = userinfo_response.json()["picture"]
-        users_name = userinfo_response.json()["given_name"]
-
-        # Doesn't exist? Add it to the database.
         user = User.get(unique_id)
         if not user:
             session['unique_id'] = unique_id
-            session['users_email'] = users_email
-            session['picture'] = picture
-            session['users_name'] = users_name
+            session['users_email'] = userinfo_response.json()["email"]
+            session['picture'] = userinfo_response.json()["picture"]
+            session['users_name'] = userinfo_response.json()["given_name"]
             return redirect(url_for("register.register"))
-        # Create a user in your db with the information provided
-        # by Google
 
-        # Begin user session by logging the user in
         login_user(user)
 
-        # Send user back to homepage
         return redirect(url_for("index.index"))
-    else:
-        return "User email not available or not verified by Google.", 400
+
+    flash("User email not available or not verified by Google.", category="danger")
+    return redirect(url_for("login.login"))

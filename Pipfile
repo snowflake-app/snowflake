@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+mypy = "*"
+pylint = "*"
+pylint-flask-sqlalchemy = "*"
 
 [packages]
 flask = "*"

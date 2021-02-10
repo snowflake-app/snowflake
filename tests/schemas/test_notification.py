@@ -37,6 +37,7 @@ def test_notification_schema_dumps_json_correctly():
                 'objectId': '1',
                 'read': False,
                 'object': {
+                    'id': '1',
                     'created_at': created_at.isoformat(),
                     'created_by': {
                         'createdAt': created_at.isoformat(),

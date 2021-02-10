@@ -7,8 +7,8 @@ from flask import Flask
 load_dotenv()
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
-REDIS_URL = os.getenv('REDIS_URL')
-TOKEN_VALIDITY_SECS = int(os.getenv('TOKEN_VALIDITY_SECS'))
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+TOKEN_VALIDITY_SECS = int(os.getenv('TOKEN_VALIDITY_SECS', '3600'))
 
 
 def init_app(app: Flask):

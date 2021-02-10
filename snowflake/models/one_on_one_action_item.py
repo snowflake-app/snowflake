@@ -15,6 +15,7 @@ class OneOnOneActionItem(db.Model):
     created_by = db.relationship('User')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
     @staticmethod
     def create(action_item):
         db.session.add(action_item)
