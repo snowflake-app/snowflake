@@ -92,7 +92,7 @@
                                                     class="clear-button has-text-danger level-item is-clickable"
                                                     data-toggle-modal="#likes-{{ appreciation.id }}">
                                                 <span>
-                                                    {% set like_count = appreciation.get_like_count() %}
+                                                    {% set like_count = appreciation.like_count %}
                                                     {{ like_count }} {{ choose_plural(like_count, 'like', 'likes') }}
                                                 </span>
                                             </button>
@@ -103,7 +103,7 @@
                                           <span class="icon is-medium">
                                             <ion-icon name="chatbubble-outline"></ion-icon>
                                           </span>
-                                            <span>{{ appreciation.get_comment_count() }}</span>
+                                            <span>{{ appreciation.comment_count }}</span>
                                         </button>
                                         <div class="modal" id="likes-{{ appreciation.id }}">
                                             <div class="modal-background"></div>
