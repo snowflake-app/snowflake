@@ -19,5 +19,7 @@ def index():
     most_appreciated = Appreciation.most_appreciated()
 
     return render_template('home.html', user=current_user, form=form, appreciations=appreciations,
-                           like_form=like_form, comment_form=comment_form, appreciations_given=appreciations_given,
-                           appreciations_received=appreciations_received, most_appreciated=most_appreciated)
+                           like_form=like_form, comment_form=comment_form,
+                           appreciations_given=appreciations_given,
+                           appreciations_received=appreciations_received,
+                           most_appreciated=most_appreciated)

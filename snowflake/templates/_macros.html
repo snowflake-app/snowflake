@@ -1,12 +1,8 @@
 {% macro render_schedule(title) %}
-<a class="button is-medium is-primary"
-   href="https://www.google.com/calendar/render?action=TEMPLATE&text={{title|urlencode}}">
-<span class="icon is-medium">
-    <ion-icon size="large" name="calendar-outline"></ion-icon>
-</span>
-    <span>
-Schedule
-</span>
-</a>
+    <a class="button is-medium is-primary"
+       href="https://www.google.com/calendar/render?action=TEMPLATE&text={{ title|urlencode }}">
+        <span class="icon is-medium"><ion-icon size="large" name="calendar-outline"></ion-icon></span>
+        <span>Schedule</span>
+    </a>
 {% endmacro %}
 

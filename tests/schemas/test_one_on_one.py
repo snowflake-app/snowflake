@@ -1,18 +1,10 @@
 from datetime import datetime
 from unittest.mock import patch
 
-import pytest
-
-from snowflake import app as flask_app
 from snowflake.models import User, OneOnOneActionItem, OneOnOne
-from snowflake.schemas.one_on_one import OneOnOneActionItemSchema, CreateOrEditOneOnOneActionItemSchema, \
+from snowflake.schemas.one_on_one import OneOnOneActionItemSchema, \
+    CreateOrEditOneOnOneActionItemSchema, \
     OneOnOneSchema, GetOneOnOneSchema, CreateOneOnOneSchema
-
-
-@pytest.fixture(scope="module", autouse=True)
-def app():
-    yield flask_app
-
 
 time = datetime.now()
 user = User(id='12345', name='Hello', designation='Developer',
@@ -160,6 +152,4 @@ def test_create_one_on_one_schema(mock_user_get):
     schema = CreateOneOnOneSchema()
     json = {"user": "hello"}
 
-    o = schema.load(json)
-
-    assert o.user == user
+    assert schema.load(json).user == user

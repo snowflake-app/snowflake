@@ -14,4 +14,4 @@ class NotificationSchema(BaseSQLAlchemyAutoSchema):
 
 
 class UpdateNotificationSchema(BaseSchema):
-    read: Boolean()
+    read = Boolean()

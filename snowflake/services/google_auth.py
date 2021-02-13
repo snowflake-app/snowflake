@@ -9,7 +9,7 @@ request = requests.Request()
 
 @dataclass
 class UserInfo:
-    id: str
+    id: str  # pylint: disable=invalid-name
     name: str
     email: str
     picture: str

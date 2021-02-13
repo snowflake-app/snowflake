@@ -12,8 +12,8 @@ login_manager.needs_refresh_message_category = "danger"
 
 
 @login_manager.request_loader
-def load_user_from_header(r: Request):
-    authorization_value = r.headers.get('Authorization')
+def load_user_from_header(incoming_request: Request):
+    authorization_value = incoming_request.headers.get('Authorization')
     if not authorization_value:
         return None
 
@@ -34,9 +34,9 @@ def load_user(user_id):
 def unauthorized_handler():
     if request.path.startswith("/api"):
         return unauthorized()
-    else:
-        flash(login_manager.login_message, category='danger')
-        return redirect(login_url(login_manager.login_view, request.url))
+
+    flash(login_manager.login_message, category='danger')
+    return redirect(login_url(login_manager.login_view, request.url))
 
 
 @user_loaded_from_header.connect

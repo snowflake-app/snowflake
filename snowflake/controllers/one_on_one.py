@@ -20,24 +20,26 @@ def one_on_one(_id):
         user = User.get_by_username(form.user.data)
 
         if user is not None:
-            o = OneOnOne(user=user, created_by=current_user)
-            OneOnOne.create(o)
+            new_one_on_one = OneOnOne(user=user, created_by=current_user)
+            OneOnOne.create(new_one_on_one)
 
-            notification.notify_one_on_one_setup(o)
+            notification.notify_one_on_one_setup(new_one_on_one)
 
             return redirect(url_for("one_on_one.one_on_one"))
-        else:
-            form.user.errors.append("User not found")
-            flash(f'User {form.user.data} not found', category='warning')
+
+        form.user.errors.append("User not found")
+        flash(f'User {form.user.data} not found', category='warning')
 
     one_on_ones = OneOnOne.get_by_user(current_user)
-    o = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(one_on_ones) else None
+    current_one_on_one = OneOnOne.get(_id) if _id is not None else one_on_ones[0] if len(
+        one_on_ones) > 0 else None
+
     return render_template('1-on-1s.html',
                            one_on_ones=one_on_ones,
                            form=form,
                            action_item_form=action_item_form,
                            action_item_state_change_form=action_item_state_change_form,
-                           one_on_one=o)
+                           one_on_one=current_one_on_one)
 
 
 @blueprint.route('/action-items', methods=['POST'])
@@ -46,8 +48,9 @@ def one_on_one_action_item():
     form = OneOnOneActionItemForm()
 
     if form.validate():
-        o = OneOnOne.get(form.one_on_one.data)
-        action_item = OneOnOneActionItem(content=form.content.data, one_on_one=o, created_by=current_user, state=False)
+        new_one_on_one = OneOnOne.get(form.one_on_one.data)
+        action_item = OneOnOneActionItem(content=form.content.data, one_on_one=new_one_on_one,
+                                         created_by=current_user, state=False)
 
         OneOnOneActionItem.create(action_item)
 

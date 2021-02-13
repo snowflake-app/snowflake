@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from . import Comment
+from .comment import Comment
 from .appreciation import Appreciation
 from .one_on_one import OneOnOne
 from .user import User
@@ -50,9 +50,12 @@ class Notification(db.Model):
     def object(self):
         if self.type == TYPE_APPRECIATION:
             return Appreciation.get(int(self.object_id))
-        elif self.type == TYPE_COMMENT_ON_APPRECIATION_GIVEN or self.type == TYPE_COMMENT_ON_APPRECIATION_RECEIVED:
+
+        if self.type in [TYPE_COMMENT_ON_APPRECIATION_GIVEN,
+                         TYPE_COMMENT_ON_APPRECIATION_RECEIVED]:
             return Comment.get(int(self.object_id))
-        elif self.type == TYPE_ONE_ON_ONE_SETUP or self.type == TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED:
+
+        if self.type in [TYPE_ONE_ON_ONE_SETUP, TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED]:
             return OneOnOne.get(self.object_id)
 
         return None

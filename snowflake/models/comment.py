@@ -15,14 +15,6 @@ class Comment(db.Model):
     appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
     appreciation: Appreciation = db.relationship('Appreciation')
 
-    @property
-    def user_id(self):
-        return self.created_by_id
-
-    @property
-    def user(self):
-        return self.created_by
-
     @staticmethod
     def create(comment):
         db.session.add(comment)

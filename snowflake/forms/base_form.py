@@ -29,9 +29,9 @@ def infer_html_attrs(field: Field):
 
 class BaseForm(FlaskForm):
     class Meta(FlaskForm.Meta):
-        def render_field(self, field: Field, kwargs):
+        def render_field(self, field, render_kw):
             attrs = field.render_kw if field.render_kw else {}
-            attrs.update(kwargs)
+            attrs.update(render_kw)
 
             html_attrs = infer_html_attrs(field)
             html_attrs.update(attrs)

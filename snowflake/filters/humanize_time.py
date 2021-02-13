@@ -20,11 +20,14 @@ def humanize_time(date: datetime):
 
     if interval < _MINUTE:
         return "Just now"
-    elif interval < _HOUR:
+
+    if interval < _HOUR:
         return f'{int(interval / _MINUTE)}m {suffix}'
-    elif interval < _DAY:
+
+    if interval < _DAY:
         return f'{int(interval / _HOUR)}h {suffix}'
-    elif interval < _MONTH:
+
+    if interval < _MONTH:
         return f'{int(interval / _DAY)}d {suffix}'
-    else:
-        return f'{date.strftime("%-m %b")} {suffix}'
+
+    return f'{date.strftime("%-m %b")} {suffix}'

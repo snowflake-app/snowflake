@@ -14,14 +14,6 @@ class Like(db.Model):
     appreciation_id = db.Column(db.String, db.ForeignKey('appreciation.id'), nullable=False)
     appreciation = db.relationship('Appreciation')
 
-    @property
-    def user_id(self):
-        return self.created_by_id
-
-    @property
-    def user(self):
-        return self.created_by
-
     @staticmethod
     def create(like):
         db.session.add(like)

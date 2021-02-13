@@ -23,7 +23,8 @@ class OneOnOne(db.Model):
 
     @staticmethod
     def get_by_user(user):
-        return OneOnOne.query.filter((OneOnOne.user_id == user.id) | (OneOnOne.created_by_id == user.id)).all()
+        return OneOnOne.query.filter(
+            (OneOnOne.user_id == user.id) | (OneOnOne.created_by_id == user.id)).all()
 
     def get_action_items(self):
         return self.action_items

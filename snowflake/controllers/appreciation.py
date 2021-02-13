@@ -15,64 +15,67 @@ blueprint = Blueprint('appreciation', __name__)
 def appreciate():
     form = AppreciationForm()
     if form.validate_on_submit():
-        appreciation = Appreciation(content=form.content.data, created_by=current_user, created_at=datetime.now())
+        appreciation = Appreciation(content=form.content.data, created_by=current_user,
+                                    created_at=datetime.now())
         Appreciation.create(appreciation)
 
         mentions = re.findall(r'@[a-zA-Z0-9._]+', form.content.data)
-        for mention in mentions:
-            user = User.get_by_username(mention[1:])
+        for mention_text in mentions:
+            user = User.get_by_username(mention_text[1:])
             if user is None:
                 continue
-            m = Mention(user=user, appreciation=appreciation, created_by=current_user)
-            Mention.create(m)
+            mention = Mention(user=user, appreciation=appreciation, created_by=current_user)
+            Mention.create(mention)
 
         notification.notify_appreciation(appreciation)
 
         return redirect(url_for('index.index'))
-    else:
-        return render_template('login.html')
+
+    return render_template('login.html')
 
 
 @blueprint.route('/like', methods=['POST'])
+@login_required
 def like():
     form = LikeForm()
-    if current_user.is_authenticated and form.validate():
+    if form.validate_on_submit():
         appreciation = Appreciation.get(form.appreciation.data)
 
-        l = Like(appreciation=appreciation, created_by=current_user)
-        Like.create(l)
+        new_like = Like(appreciation=appreciation, created_by=current_user)
+        Like.create(new_like)
 
         return redirect(url_for('index.index'))
-    else:
-        return render_template('login.html')
+
+    return render_template('login.html')
 
 
 @blueprint.route('/comment', methods=['POST'])
 @login_required
 def comment():
     form = CommentForm()
-    if form.validate():
+    if form.validate_on_submit():
         appreciation = Appreciation.get(form.appreciation.data)
 
-        c = Comment(appreciation=appreciation,
-                    created_by=current_user,
-                    content=form.content.data,
-                    created_at=datetime.now())
-        Comment.create(c)
+        new_comment = Comment(appreciation=appreciation,
+                              created_by=current_user,
+                              content=form.content.data,
+                              created_at=datetime.now())
+        Comment.create(new_comment)
 
-        notification.notify_comment(c)
+        notification.notify_comment(new_comment)
 
     return redirect(url_for('index.index'))
 
 
 @blueprint.route('/dislike', methods=['POST'])
+@login_required
 def dislike():
     form = LikeForm()
-    if current_user.is_authenticated and form.validate():
+    if form.validate_on_submit():
         appreciation = Appreciation.get(form.appreciation.data)
 
         Like.dislike(appreciation=appreciation, user=current_user)
 
         return redirect(url_for('index.index'))
-    else:
-        return render_template('login.html')
+
+    return render_template('login.html')
