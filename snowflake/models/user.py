@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask_login import UserMixin
+from sqlalchemy import func
 
 from ..db import db
 
@@ -25,5 +26,8 @@ class User(db.Model, UserMixin):
         return User.query.filter_by(username=username).first()
 
     @staticmethod
-    def find_by_name_prefix(q):
-        return User.query.filter(User.username.startswith(q) | User.name.startswith(q)).all()
+    def find_by_name_prefix(q: str):
+        q = q.lower()
+        return User.query.filter(
+            func.lower(User.username).startswith(q) |
+            func.lower(User.name).startswith(q)).all()
