@@ -1,3 +1,4 @@
+from . import appreciations
 from . import healthcheck
 from . import notifications
 from . import one_on_ones

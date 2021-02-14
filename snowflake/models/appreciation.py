@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from .comment import Comment
 from .like import Like
 from .user import User
 from ..db import db
@@ -21,6 +22,14 @@ class Appreciation(db.Model):
     def creator(self):
         return self.created_by
 
+    @property
+    def like_count(self):
+        return Like.query.filter_by(appreciation=self).count()
+
+    @property
+    def comment_count(self):
+        return Comment.query.filter_by(appreciation=self).count()
+
     @staticmethod
     def create(appreciation):
         db.session.add(appreciation)
@@ -31,26 +40,23 @@ class Appreciation(db.Model):
         return Appreciation.query.order_by(Appreciation.created_at.desc()).all()
 
     def get_like_count(self):
-        return Like.query.filter_by(appreciation=self).count()
+        return self.like_count
 
     def get_comment_count(self):
-        return db.session.scalar('SELECT COUNT(*) FROM comment c WHERE c.appreciation_id = :id',
-                                 {'id': self.id})
+        return self.comment_count
 
     def is_liked_by(self, user: User):
-        return db.session.scalar(
-            '''
-            SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :appreciation_id
-            AND l.created_by_id = :user_id
-            ''',
-            {'appreciation_id': self.id, 'user_id': user.id}) > 0
+        return Like.query.filter_by(appreciation=self, created_by=user).count() > 0
 
     @staticmethod
-    def get(id_):
+    def get(id_) -> 'Appreciation':
         return Appreciation.query.get(id_)
 
     def get_mentions(self):
         return self.mentions
+
+    def get_comments(self):
+        return self.comments
 
     @staticmethod
     def count_by_user(user: User):
@@ -80,6 +86,3 @@ class Appreciation(db.Model):
             })
 
         return result
-
-    def get_comments(self):
-        return self.comments

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from snowflake.db import db
+from ..db import db
 
 
 class OneOnOneActionItem(db.Model):
