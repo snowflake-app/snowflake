@@ -25,6 +25,10 @@ class Like(db.Model):
 
     @staticmethod
     def dislike(appreciation, user):
-        like = Like.query.filter_by(appreciation_id=appreciation.id, user_id=user.id).first()
+        like = Like.query.filter_by(appreciation=appreciation, user=user).first()
         db.session.delete(like)
         db.session.commit()
+
+    @staticmethod
+    def get_by_appreciation_and_user(appreciation, user):
+        return Like.query.filter_by(appreciation=appreciation, created_by=user).first()

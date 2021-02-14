@@ -19,6 +19,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip pipenv
           pipenv install --deploy --system --dev
-      - name: Lint
+      - name: Test
         run: |
-          make lint lint-tests
+          make test

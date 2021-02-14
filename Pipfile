@@ -8,6 +8,7 @@ pytest = "*"
 mypy = "*"
 pylint = "*"
 pylint-flask-sqlalchemy = "*"
+testcontainers = {extras = ["postgresql", "redis"], version = "*"}
 
 [packages]
 flask = "*"
