@@ -9,6 +9,7 @@ mypy = "*"
 pylint = "*"
 pylint-flask-sqlalchemy = "*"
 testcontainers = {extras = ["postgresql", "redis"], version = "*"}
+pytest-cov = "*"
 
 [packages]
 flask = "*"

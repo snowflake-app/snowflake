@@ -1,5 +1,5 @@
 test: lint lint-tests
-	pytest tests -v
+	pytest --cov=snowflake --cov-report=term:skip-covered tests -v
 
 lint-tests:
 	mypy tests
