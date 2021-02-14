@@ -3,6 +3,7 @@ import json
 from flask import Flask, url_for
 
 from . import filters, settings, logger
+from . import migrations
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, \
     notifications
 from .db import db
@@ -63,3 +64,8 @@ def setup():
         'entrypoint': entrypoint,
         'choose_plural': choose_plural,
     }
+
+
+@app.cli.command('migrate')
+def migrate():
+    migrations.migrate()
