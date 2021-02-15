@@ -153,3 +153,4 @@ def test_create_one_on_one_schema(mock_user_get):
     json = {"user": "hello"}
 
     assert schema.load(json).user == user
+    assert mock_user_get.is_called_with("hello")
