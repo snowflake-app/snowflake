@@ -48,7 +48,7 @@ def create_app():
     app.session_interface = CustomSessionInterface(key_prefix='session', redis=redis)
 
     @app.context_processor
-    def setup():  # pylint: disable=unused-variable
+    def setup():  # pragma: no cover, pylint: disable=unused-variable
         def entrypoint(file: str):
             with open(f"{app.static_folder}/assets/manifest.json") as manifest_file:
                 manifest = json.load(manifest_file)
@@ -68,7 +68,7 @@ def create_app():
         }
 
     @app.cli.command('migrate')
-    def migrate():  # pylint: disable=unused-variable
+    def migrate():  # pragma: no cover, pylint: disable=unused-variable
         migrations.migrate()
 
     return app
