@@ -30,6 +30,8 @@ google-auth = "*"
 redis = "*"
 flask-session = "*"
 blinker = "*"
+sqlalchemy = "*"
+flask-redis = "*"
 
 [requires]
 python_version = "3.9"

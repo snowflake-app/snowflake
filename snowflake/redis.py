@@ -1,8 +1,6 @@
-from redis import Redis
+from flask_redis import FlaskRedis
 
-from . import settings
-
-redis = Redis.from_url(settings.redis_uri(), socket_keepalive=True)
+redis = FlaskRedis(socket_keepalive=True)
 
 
 def health_check():
