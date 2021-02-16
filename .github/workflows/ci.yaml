@@ -21,4 +21,4 @@ jobs:
           pipenv install --deploy --system --dev
       - name: Test
         run: |
-          make test
+          make
