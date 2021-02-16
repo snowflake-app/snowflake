@@ -33,6 +33,7 @@ flask-session = "*"
 blinker = "*"
 sqlalchemy = "*"
 flask-redis = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.9"
