@@ -1,6 +1,7 @@
 from flask import Blueprint, request, session, redirect, url_for, render_template
 from flask_login import login_user
 
+from snowflake import db
 from snowflake.forms import RegistrationForm
 from snowflake.models import User
 
@@ -22,7 +23,8 @@ def register():
                     team_name=form.team_name.data, designation=form.designation.data,
                     username=username)
 
-        User.create(user)
+        with db.transaction():
+            db.persist(user)
 
         login_user(user)
 

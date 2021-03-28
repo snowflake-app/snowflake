@@ -17,11 +17,6 @@ class OneOnOne(db.Model):
         return OneOnOne.query.get(one_on_one_id)
 
     @staticmethod
-    def create(one_on_one):
-        db.session.add(one_on_one)
-        db.session.commit()
-
-    @staticmethod
     def get_by_user(user):
         return OneOnOne.query.filter(
             (OneOnOne.user_id == user.id) | (OneOnOne.created_by_id == user.id)).all()

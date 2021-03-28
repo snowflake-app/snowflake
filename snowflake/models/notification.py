@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from .comment import Comment
 from .appreciation import Appreciation
+from .comment import Comment
 from .one_on_one import OneOnOne
 from .user import User
 from ..db import db
@@ -24,11 +24,6 @@ class Notification(db.Model):
     type = db.Column(db.String)
     object_id = db.Column(db.String)
     read = db.Column(db.Boolean, default=False)
-
-    @staticmethod
-    def create(notification):
-        db.session.add(notification)
-        db.session.commit()
 
     @staticmethod
     def get(id_):

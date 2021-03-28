@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ..db import db
+from ..db import db, transaction, delete
 
 
 class Like(db.Model):
@@ -15,19 +15,14 @@ class Like(db.Model):
     appreciation = db.relationship('Appreciation')
 
     @staticmethod
-    def create(like):
-        db.session.add(like)
-        db.session.commit()
-
-    @staticmethod
     def get_by_appreciation(appreciation):
         return Like.query.filter_by(appreciation_id=appreciation.id).all()
 
     @staticmethod
     def dislike(appreciation, user):
         like = Like.query.filter_by(appreciation=appreciation, user=user).first()
-        db.session.delete(like)
-        db.session.commit()
+        with transaction():
+            delete(like)
 
     @staticmethod
     def get_by_appreciation_and_user(appreciation, user):

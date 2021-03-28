@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
+from snowflake import db
 from snowflake.forms import AppreciationForm, LikeForm, CommentForm
 from snowflake.models import Appreciation, User, Mention, Like, Comment
 from snowflake.services import notification
@@ -17,17 +18,19 @@ def appreciate():
     if form.validate_on_submit():
         appreciation = Appreciation(content=form.content.data, created_by=current_user,
                                     created_at=datetime.now())
-        Appreciation.create(appreciation)
+        with db.transaction():
+            db.persist(appreciation)
 
-        mentions = re.findall(r'@[a-zA-Z0-9._]+', form.content.data)
-        for mention_text in mentions:
-            user = User.get_by_username(mention_text[1:])
-            if user is None:
-                continue
-            mention = Mention(user=user, appreciation=appreciation, created_by=current_user)
-            Mention.create(mention)
+            mentions = re.findall(r'@[a-zA-Z0-9._]+', form.content.data)
+            for mention_text in mentions:
+                user = User.get_by_username(mention_text[1:])
+                if user is None:
+                    continue
+                mention = Mention(user=user, appreciation=appreciation, created_by=current_user)
 
-        notification.notify_appreciation(appreciation)
+                db.persist(mention)
+
+            notification.notify_appreciation(appreciation)
 
         return redirect(url_for('index.index'))
 
@@ -42,7 +45,9 @@ def like():
         appreciation = Appreciation.get(form.appreciation.data)
 
         new_like = Like(appreciation=appreciation, created_by=current_user)
-        Like.create(new_like)
+
+        with db.transaction():
+            db.persist(new_like)
 
         return redirect(url_for('index.index'))
 
@@ -60,9 +65,10 @@ def comment():
                               created_by=current_user,
                               content=form.content.data,
                               created_at=datetime.now())
-        Comment.create(new_comment)
 
-        notification.notify_comment(new_comment)
+        with db.transaction():
+            db.persist(new_comment)
+            notification.notify_comment(new_comment)
 
     return redirect(url_for('index.index'))
 

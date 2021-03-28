@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 
 from .response import not_found, unauthorized, no_content, bad_request, validation_error
 from ... import acl
-from ...db import transaction, db
+from ... import db
 from ...models import OneOnOne, OneOnOneActionItem
 from ...schemas.one_on_one import OneOnOneSchema, GetOneOnOneSchema, CreateOneOnOneSchema, \
     OneOnOneActionItemSchema, \
@@ -38,8 +38,8 @@ def create_one_on_one():
         one_on_one.created_by = current_user
         one_on_one.created_at = datetime.now()
 
-        with transaction():
-            OneOnOne.create(one_on_one)
+        with db.transaction():
+            db.persist(one_on_one)
 
         return get_one_on_one_schema.jsonify(one_on_one)
     except ValidationError as e:
@@ -71,8 +71,8 @@ def delete_one_on_one(_id: int):
     if not acl.can_delete_one_on_one(one_on_one):
         return unauthorized()
 
-    with transaction():
-        db.session.delete(one_on_one)
+    with db.transaction():
+        db.delete(one_on_one)
 
     return no_content()
 
@@ -132,8 +132,8 @@ def delete_action_item(one_on_one_id: int, action_item_id: int):
     if not action_item.one_on_one_id == one_on_one.id:
         return not_found()
 
-    with transaction():
-        db.session.delete(one_on_one)
+    with db.transaction():
+        db.delete(one_on_one)
 
     return no_content()
 
@@ -159,8 +159,8 @@ def create_action_item(one_on_one_id: int):
         action_item.created_by = current_user
         action_item.created_at = datetime.now()
 
-        with transaction():
-            OneOnOneActionItem.create(action_item)
+        with db.transaction():
+            db.persist(action_item)
 
         return one_on_one_action_item_schema.jsonify(action_item)
     except ValidationError as e:
@@ -187,8 +187,8 @@ def edit_action_item(one_on_one_id: int, action_item_id: int):
         updated_action_item = create_or_edit_one_on_one_action_item_schema.load(
             request.json, existing_action_item)
 
-        with transaction():
-            db.session.add(updated_action_item)
+        with db.transaction():
+            db.persist(updated_action_item)
 
         return one_on_one_action_item_schema.jsonify(updated_action_item)
     except ValidationError as e:

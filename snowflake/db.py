@@ -9,11 +9,23 @@ db = SQLAlchemy()
 def transaction():
     try:
         yield
-        db.session.commit()
+        db.session.commit()  # pylint: disable=no-member
     except Exception:
-        db.session.rollback()
+        db.session.rollback()  # pylint: disable=no-member
         raise
 
 
+def persist(*args):
+    db.session.add_all(args)  # pylint: disable=no-member
+
+
+def delete(obj):
+    db.session.delete(obj)  # pylint: disable=no-member
+
+
 def health_check():
-    db.session.execute("select 1")
+    db.session.execute("select 1")  # pylint: disable=no-member
+
+
+def execute(sql):
+    return db.session.execute(sql)  # pylint: disable=no-member

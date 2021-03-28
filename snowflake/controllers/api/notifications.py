@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from .request import requires_json
 from .response import not_found
-from ...db import db
+from ... import db
 from ...models import Notification
 from ...schemas.notification import NotificationSchema, UpdateNotificationSchema
 
@@ -31,8 +31,8 @@ def update_notification(_id):
 
     notification.read = req_body['read']
 
-    db.session.add(notification)
-    db.session.commit()
+    with db.transaction():
+        db.persist(notification)
 
     return schema.jsonify(notification)
 

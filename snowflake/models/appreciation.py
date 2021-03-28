@@ -1,8 +1,9 @@
 from datetime import datetime
 
+from .comment import Comment
 from .like import Like
 from .user import User
-from ..db import db
+from ..db import db, execute
 
 
 class Appreciation(db.Model):
@@ -22,11 +23,6 @@ class Appreciation(db.Model):
         return self.created_by
 
     @staticmethod
-    def create(appreciation):
-        db.session.add(appreciation)
-        db.session.commit()
-
-    @staticmethod
     def get_all():
         return Appreciation.query.order_by(Appreciation.created_at.desc()).all()
 
@@ -34,16 +30,10 @@ class Appreciation(db.Model):
         return Like.query.filter_by(appreciation=self).count()
 
     def get_comment_count(self):
-        return db.session.scalar('SELECT COUNT(*) FROM comment c WHERE c.appreciation_id = :id',
-                                 {'id': self.id})
+        return Comment.query.filter_by(appreciation=self).count()
 
     def is_liked_by(self, user: User):
-        return db.session.scalar(
-            '''
-            SELECT COUNT(*) FROM "like" l WHERE l.appreciation_id = :appreciation_id
-            AND l.created_by_id = :user_id
-            ''',
-            {'appreciation_id': self.id, 'user_id': user.id}) > 0
+        return Like.query.filter_by(appreciation=self, created_by=user).count() > 0
 
     @staticmethod
     def get(id_):
@@ -58,7 +48,7 @@ class Appreciation(db.Model):
 
     @staticmethod
     def most_appreciated():
-        rows = db.session.execute(
+        rows = execute(
             '''
             SELECT user_id, COUNT(user_id) AS c FROM mention m
             JOIN "appreciation" a ON m.appreciation_id=a.id

@@ -17,14 +17,5 @@ class OneOnOneActionItem(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     @staticmethod
-    def create(action_item):
-        db.session.add(action_item)
-        db.session.commit()
-
-    def update(self):
-        db.session.add(self)
-        db.session.commit()
-
-    @staticmethod
     def get(_id) -> 'OneOnOneActionItem':
         return OneOnOneActionItem.query.get(_id)

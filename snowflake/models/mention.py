@@ -19,10 +19,5 @@ class Mention(db.Model):
                                  backref=db.backref('mentions_given', lazy=True))
 
     @staticmethod
-    def create(mention):
-        db.session.add(mention)
-        db.session.commit()
-
-    @staticmethod
     def count_by_user(user):
         return Mention.query.filter_by(user_id=user.id).count()

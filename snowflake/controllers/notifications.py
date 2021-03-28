@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 
+from snowflake import db
 from snowflake.controllers.api.response import not_found
 from snowflake.models.notification import Notification, TYPE_APPRECIATION, \
     TYPE_COMMENT_ON_APPRECIATION_RECEIVED, TYPE_COMMENT_ON_APPRECIATION_GIVEN, \
     TYPE_ONE_ON_ONE_SETUP, TYPE_ONE_ON_ONE_ACTION_ITEM_ADDED
-from ..db import db
 
 blueprint = Blueprint('notifications', __name__)
 
@@ -32,8 +32,9 @@ def open_notification(_id):
         return not_found()
 
     notification.read = True
-    db.session.add(notification)
-    db.session.commit()
+
+    with db.transaction():
+        db.persist(notification)
 
     return redirect(build_redirect(notification))
 

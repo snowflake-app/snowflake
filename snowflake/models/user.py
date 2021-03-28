@@ -21,11 +21,6 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
     @staticmethod
-    def create(user):
-        db.session.add(user)
-        db.session.commit()
-
-    @staticmethod
     def get_by_username(username):
         return User.query.filter_by(username=username).first()
 

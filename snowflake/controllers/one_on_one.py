@@ -1,6 +1,7 @@
 from flask import Blueprint, url_for, redirect, render_template, flash
 from flask_login import login_required, current_user
 
+from snowflake import db
 from snowflake.forms import OneOnOneForm, OneOnOneActionItemForm, OneOnOneActionItemStateChange
 from snowflake.models import User, OneOnOne, OneOnOneActionItem
 from snowflake.services import notification
@@ -21,9 +22,10 @@ def one_on_one(_id):
 
         if user is not None:
             new_one_on_one = OneOnOne(user=user, created_by=current_user)
-            OneOnOne.create(new_one_on_one)
 
-            notification.notify_one_on_one_setup(new_one_on_one)
+            with db.transaction():
+                db.persist(new_one_on_one)
+                notification.notify_one_on_one_setup(new_one_on_one)
 
             return redirect(url_for("one_on_one.one_on_one"))
 
@@ -51,10 +53,9 @@ def one_on_one_action_item():
         new_one_on_one = OneOnOne.get(form.one_on_one.data)
         action_item = OneOnOneActionItem(content=form.content.data, one_on_one=new_one_on_one,
                                          created_by=current_user, state=False)
-
-        OneOnOneActionItem.create(action_item)
-
-        notification.notify_one_on_one_action_item_added(action_item)
+        with db.transaction():
+            db.persist(action_item)
+            notification.notify_one_on_one_action_item_added(action_item)
 
     return redirect(f'/1-on-1s/{form.one_on_one.data}')
 
@@ -67,7 +68,9 @@ def one_on_one_action_item_done():
         action_item_data = form.action_item.data
         action_item = OneOnOneActionItem.get(action_item_data)
         action_item.state = 1
-        action_item.update()
+
+        with db.transaction():
+            db.persist(action_item)
 
         return redirect(f'/{action_item.one_on_one.id}')
 
