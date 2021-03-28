@@ -1,15 +1,15 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from ..db import db
 
 
 class OneOnOne(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    created_by_id = db.Column(db.String, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     created_by = db.relationship('User', foreign_keys=[created_by_id])
 
-    user_id = db.Column(db.String, db.ForeignKey('user.id'))
+    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', foreign_keys=[user_id])
 
     @staticmethod

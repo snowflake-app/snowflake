@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask_login import UserMixin
 from sqlalchemy import func
 
@@ -8,14 +6,16 @@ from ..db import db
 
 class User(db.Model, UserMixin):
     id = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String(255))
-    designation = db.Column(db.Text)
-    team_name = db.Column(db.String(255))
-    email = db.Column(db.String)
+    name = db.Column(db.String(255), nullable=False)
+    designation = db.Column(db.Text, nullable=False)
+    team_name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
     profile_pic = db.Column(db.String)
-    username = db.Column(db.String(255))
+    username = db.Column(db.String(255), nullable=False, unique=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+
+    appreciations = db.relationship('Appreciation', viewonly=True, lazy=True)
 
     @staticmethod
     def get(user_id):

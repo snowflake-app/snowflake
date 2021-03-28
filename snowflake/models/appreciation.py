@@ -1,4 +1,4 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from .comment import Comment
 from .like import Like
@@ -9,14 +9,14 @@ from ..db import db, execute
 class Appreciation(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
-    content = db.Column(db.Text)
+    content = db.Column(db.Text, nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    created_by_id = db.Column(db.String, db.ForeignKey('user.id'))
-    created_by = db.relationship('User', backref=db.backref('appreciations', lazy=True))
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
 
-    likes = db.relationship('Like', lazy=True)
-    comments = db.relationship('Comment', lazy=True)
+    created_by = db.relationship('User', lazy=True)
+    likes = db.relationship('Like', viewonly=True, lazy=True)
+    comments = db.relationship('Comment', viewonly=True, lazy=True)
 
     @property
     def creator(self):

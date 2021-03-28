@@ -1,4 +1,4 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from ..db import db
 
@@ -13,7 +13,7 @@ class Mention(db.Model):
     appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
     appreciation = db.relationship('Appreciation', backref=db.backref('mentions', lazy=True))
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     created_by = db.relationship('User', foreign_keys=(created_by_id,),
                                  backref=db.backref('mentions_given', lazy=True))

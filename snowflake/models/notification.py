@@ -1,4 +1,4 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from .appreciation import Appreciation
 from .comment import Comment
@@ -17,13 +17,13 @@ TYPE_COMMENT_ON_APPRECIATION_COMMENTED = "comment_on_appreciation_commented"
 class Notification(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.String, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('notifications', lazy=True))
 
-    type = db.Column(db.String)
-    object_id = db.Column(db.String)
-    read = db.Column(db.Boolean, default=False)
+    type = db.Column(db.String, nullable=False)
+    object_id = db.Column(db.String, nullable=False)
+    read = db.Column(db.Boolean, default=False, nullable=False)
 
     @staticmethod
     def get(id_):
