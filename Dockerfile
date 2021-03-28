@@ -12,7 +12,7 @@ COPY _frontend/ /app/_frontend
 
 RUN mkdir -p snowflake/static/assets && npm run build
 
-FROM python:3.8
+FROM python:3.9
 
 WORKDIR /app
 
