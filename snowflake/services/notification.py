@@ -34,7 +34,7 @@ def notify_comment(comment: Comment):
             users_to_notify[user_id] = TYPE_COMMENT_ON_APPRECIATION_RECEIVED
 
     for existing_comment in comment.appreciation.comments:
-        user_id = existing_comment.user_id
+        user_id = existing_comment.created_by_id
 
         if user_id not in users_to_notify:
             users_to_notify[user_id] = TYPE_COMMENT_ON_APPRECIATION_COMMENTED

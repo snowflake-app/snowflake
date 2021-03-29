@@ -1,7 +1,6 @@
 import datetime
 import logging
 import os
-import sys
 from dataclasses import dataclass
 from os.path import dirname
 from urllib.parse import urlparse
@@ -19,8 +18,7 @@ def open_connection():
     uri = settings.database_uri()
 
     if uri is None:
-        log.error('DATABASE_URI not defined, exiting')
-        sys.exit(1)
+        raise ValueError('DATABASE_URI not defined')
 
     result = urlparse(uri)
     return psycopg2.connect(
@@ -39,18 +37,14 @@ class Migration:
     script: str
 
 
-def load_migrations(directory=None):
-    if not directory:
-        directory = os.path.join(dirname(__file__), '../migrations')
+def load_migrations():
+    directory = os.path.join(dirname(__file__), '../migrations')
 
-    files = os.listdir(directory)
+    files = [file for file in os.listdir(directory) if file.lower().endswith('.sql')]
 
     migrations = []
 
     for file in files:
-        if not file.endswith('.sql'):
-            continue
-
         file_name = os.path.splitext(file)[0]
         version, description = file_name.split('_', 1)
 
@@ -82,23 +76,19 @@ def migrate():
 
             applied_versions = {row[0] for row in rows}
 
-            migrations = load_migrations()
+            migrations_to_apply = [migration for migration in load_migrations() if
+                                   migration.version not in applied_versions]
 
-            for migration in migrations:
-                if migration.version not in applied_versions:
-                    log.info('Applying %s', migration.script)
-                    cur.execute(migration.script)
+            for migration in migrations_to_apply:
+                log.info('Applying %s', migration.script)
+                cur.execute(migration.script)
 
-                    cur.execute(
-                        '''
-                        INSERT INTO migrations(version, description, applied_at)
-                        VALUES (%s, %s, %s)
-                        ''',
-                        (migration.version, migration.description, datetime.datetime.now()))
-                    log.info('Applied %s %s', migration.version, migration.description)
+                cur.execute(
+                    '''
+                    INSERT INTO migrations(version, description, applied_at)
+                    VALUES (%s, %s, %s)
+                    ''',
+                    (migration.version, migration.description, datetime.datetime.now()))
+                log.info('Applied %s %s', migration.version, migration.description)
 
-            print("Applied migrations")
-
-
-if __name__ == '__main__':
-    migrate()
+            log.info("Succesfully applied migrations till latest version")

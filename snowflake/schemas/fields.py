@@ -12,9 +12,3 @@ class UserByUsername(Field):
             raise ValidationError(f"User {value} not found")
 
         return user
-
-    def _serialize(self, value: User, attr, obj, **kwargs):
-        if value is None:
-            return None
-
-        return value.username

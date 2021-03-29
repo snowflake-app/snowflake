@@ -25,4 +25,4 @@ RUN pipenv install --system
 COPY . /app
 COPY --from=static /app/snowflake/static/assets /app/snowflake/static/assets
 
-CMD gunicorn --bind 0.0.0.0:5000 snowflake:app
+CMD gunicorn --bind 0.0.0.0:5000 snowflake.wsgi:app

@@ -9,6 +9,7 @@ mypy = "*"
 pylint = "*"
 pylint-flask-sqlalchemy = "*"
 testcontainers = {extras = ["postgresql", "redis"], version = "*"}
+pytest-cov = "*"
 
 [packages]
 flask = "*"
@@ -30,6 +31,9 @@ google-auth = "*"
 redis = "*"
 flask-session = "*"
 blinker = "*"
+sqlalchemy = "*"
+flask-redis = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.9"

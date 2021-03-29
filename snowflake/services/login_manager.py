@@ -17,10 +17,15 @@ def load_user_from_header(incoming_request: Request):
     if not authorization_value:
         return None
 
-    scheme, token = authorization_value.split(' ', 1)
+    parts = authorization_value.split(' ', 1)
+
+    if len(parts) != 2:
+        abort(400, bad_request('Malformed authorization'))
+
+    scheme, token = parts
 
     if scheme != 'Bearer':
-        abort(400, bad_request('Malformed authorization'))
+        return None
 
     return token_manager.load_user(token)
 

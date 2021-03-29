@@ -23,6 +23,8 @@ def init_app(app: Flask):
 
     app.config.update(
         SQLALCHEMY_DATABASE_URI=database_uri(),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        REDIS_URL=redis_uri(),
         GOOGLE_CLIENT_ID=os.getenv("GOOGLE_CLIENT_ID"),
         GOOGLE_CLIENT_SECRET=os.getenv("GOOGLE_CLIENT_SECRET"),
         GOOGLE_PROVIDER_CONFIG=requests.get(GOOGLE_DISCOVERY_URL).json(),
