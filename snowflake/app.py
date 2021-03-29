@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, url_for
 
-from . import db, filters, settings, logger, migrations
+from . import db, filters, settings, migrations, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, \
     notifications
 from .marshmallow import marshmallow

@@ -35,6 +35,7 @@ sqlalchemy = "*"
 flask-redis = "*"
 werkzeug = "*"
 alembic = "*"
+flask-migrate = "*"
 
 [requires]
 python_version = "3.9"
