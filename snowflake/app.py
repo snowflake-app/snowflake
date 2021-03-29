@@ -2,11 +2,9 @@ import json
 
 from flask import Flask, url_for
 
-from . import filters, settings, logger
-from . import migrations
+from . import db, filters, settings, migrations, logger
 from .controllers import api, login, register, profile, index, one_on_one, appreciation, logout, \
     notifications
-from .db import db
 from .marshmallow import marshmallow
 from .redis import redis
 from .services import login_manager

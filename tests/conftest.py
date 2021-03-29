@@ -1,11 +1,11 @@
 import os
 
+import flask_migrate
 import pytest
 from testcontainers.postgres import PostgresContainer
 from testcontainers.redis import RedisContainer
 
 from snowflake.app import create_app
-from snowflake.migrations import migrate
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -15,7 +15,10 @@ def app():
         os.environ['DATABASE_URI'] = postgres.get_connection_url()
         os.environ['REDIS_URI'] = redis_url
 
-        migrate()
         flask_app = create_app()
         flask_app.config['TESTING'] = True
+
+        with flask_app.app_context():
+            flask_migrate.upgrade()
+
         yield flask_app

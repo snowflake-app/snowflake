@@ -8,7 +8,7 @@ pytest = "*"
 mypy = "*"
 pylint = "*"
 pylint-flask-sqlalchemy = "*"
-testcontainers = {extras = ["postgresql", "redis"], version = "*"}
+testcontainers = { extras = ["postgresql", "redis"], version = "*" }
 pytest-cov = "*"
 
 [packages]
@@ -34,6 +34,8 @@ blinker = "*"
 sqlalchemy = "*"
 flask-redis = "*"
 werkzeug = "*"
+alembic = "*"
+flask-migrate = "*"
 
 [requires]
 python_version = "3.9"

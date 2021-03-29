@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from os.path import dirname
 from urllib.parse import urlparse
 
+import flask_migrate
 import psycopg2
 
 from . import settings
@@ -64,6 +65,18 @@ def migrate():
         with conn.cursor() as cur:
             cur.execute(
                 """
+                    SELECT 1
+                    FROM information_schema.tables
+                    WHERE table_schema = 'public'
+                    AND table_name = 'alembic_version'
+                    """)
+            if cur.fetchone():
+                log.error("snowflake is set to use alembic")
+                log.error("Please use 'flask db upgrade'")
+                return
+
+            cur.execute(
+                """
                 CREATE TABLE IF NOT EXISTS migrations (
                    id SERIAL PRIMARY KEY,
                    version INTEGER NOT NULL,
@@ -92,3 +105,8 @@ def migrate():
                 log.info('Applied %s %s', migration.version, migration.description)
 
             log.info("Succesfully applied migrations till latest version")
+            flask_migrate.stamp(revision='7826617e8197')
+
+
+if __name__ == '__main__':
+    migrate()

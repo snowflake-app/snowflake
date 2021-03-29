@@ -22,8 +22,8 @@ def init_app(app: Flask):
     app.secret_key = os.getenvb(b"SECRET_KEY") or os.urandom(24)
 
     app.config.update(
-        SQLALCHEMY_DATABASE_URI=database_uri(),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        SQLALCHEMY_DATABASE_URI=database_uri(),
         REDIS_URL=redis_uri(),
         GOOGLE_CLIENT_ID=os.getenv("GOOGLE_CLIENT_ID"),
         GOOGLE_CLIENT_SECRET=os.getenv("GOOGLE_CLIENT_SECRET"),

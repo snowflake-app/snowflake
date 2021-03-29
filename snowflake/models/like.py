@@ -1,4 +1,4 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from ..db import db, transaction, delete
 
@@ -6,12 +6,12 @@ from ..db import db, transaction, delete
 class Like(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
 
     created_by_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False)
     created_by = db.relationship('User', backref=db.backref('likes', lazy=True))
 
-    appreciation_id = db.Column(db.String, db.ForeignKey('appreciation.id'), nullable=False)
+    appreciation_id = db.Column(db.BigInteger, db.ForeignKey('appreciation.id'), nullable=False)
     appreciation = db.relationship('Appreciation')
 
     @staticmethod
