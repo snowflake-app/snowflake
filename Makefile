@@ -1,7 +1,7 @@
 SRC=$(shell find snowflake -type f -name '*.py')
 TEST_SRC=$(shell find tests -type f -name '*.py')
 
-.PHONY: all
+.PHONY: all clean
 
 all: snowflake tests
 
@@ -15,3 +15,6 @@ snowflake: $(SRC) Pipfile Pipfile.lock
 	mypy snowflake
 	pylint snowflake
 	@touch snowflake
+
+clean:
+	@touch $(SRC) $(TEST_SRC)
