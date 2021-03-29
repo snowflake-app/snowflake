@@ -36,6 +36,7 @@ flask-redis = "*"
 werkzeug = "*"
 alembic = "*"
 flask-migrate = "*"
+minio = "*"
 
 [requires]
 python_version = "3.9"

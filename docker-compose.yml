@@ -2,11 +2,25 @@ version: '3'
 services:
   db:
     image: postgres:13
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
   redis:
     image: redis:6
     ports:
       - 6379:6379
+  minio:
+    image: 'minio/minio:latest'
+    ports:
+      - 9000:9000
+    command: 'minio server /srv'
+    environment:
+      - MINIO_ROOT_USER=${S3_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${S3_SECRET_KEY}
+      - MINIO_BROWSER=${MINIO_BROWSER}
+    volumes:
+      - minio_data:/srv
+
+volumes:
+  minio_data:

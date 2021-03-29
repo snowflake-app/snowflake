@@ -1,11 +1,18 @@
+import secrets
+
 from flask import Blueprint, request, session, redirect, url_for, render_template
 from flask_login import login_user
 
 from snowflake import db
 from snowflake.forms import RegistrationForm
 from snowflake.models import User
+from snowflake.services import file_system
 
 blueprint = Blueprint('register', __name__)
+
+
+def profile_picture_url():
+    return f'user-profile-pictures/{secrets.token_urlsafe(32)}.jpg'
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
@@ -15,13 +22,20 @@ def register():
     if request.method == 'POST' and form.validate():
         unique_id = session['unique_id']
         users_email = session['users_email']
-        picture = session['picture']
+        picture_url = session['picture']
         full_name = session['users_name']
         username = users_email.split("@")[0]
 
-        user = User(id=unique_id, email=users_email, name=full_name, profile_pic=picture,
+        user = User(id=unique_id, email=users_email, name=full_name, profile_pic=None,
                     team_name=form.team_name.data, designation=form.designation.data,
                     username=username)
+
+        with db.transaction():
+            db.persist(user)
+
+        uploaded_url = file_system.put_remote_object(profile_picture_url(), picture_url)
+
+        user.profile_pic = uploaded_url
 
         with db.transaction():
             db.persist(user)
