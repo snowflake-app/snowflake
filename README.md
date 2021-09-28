@@ -18,7 +18,13 @@ Snowflake
    leave it running.
 3. Active a Pipenv shell using `pipenv shell`
 4. Install dependencies `pipenv install && npm install`
-5. Run migrations using `python migration.py`
-6. Start asset pipeline with `npm start` and leave it running.
-7. Start the application with `flask run`
-8. Run tests with `make`
+5. Run migrations using `flask db upgrade`
+6. Configure included MinIO with `minio/stable/mc` (`brew install minio/stable/mc`)
+   ```shell
+   mc alias set local http://localhost:9000 root snowflake
+   mc mb local/user-content
+   mc policy set-json scripts/minio-policy.json local/user-content
+   ```
+7. Start asset pipeline with `npm start` and leave it running.
+8. Start the application with `flask run`
+9. Run tests with `make`

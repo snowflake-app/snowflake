@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "42066f8daaa8d51d0b5bd49e1fcc17b3d571b9e1f09f155de8e677ec91f9be74"
+            "sha256": "e72c22d178f03265c0192a48b2b839afcd3679fb6581d05930d686adbaff7ed3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -371,6 +371,14 @@
             "index": "pypi",
             "version": "==0.24.2"
         },
+        "minio": {
+            "hashes": [
+                "sha256:0e69575a0b1b64bce9f158b52b5914953f902a21032966d070ab0d14ceef8962",
+                "sha256:f2f6022cfe4694d946972efef2a752f87d08cc030940faa50a640088772953c8"
+            ],
+            "index": "pypi",
+            "version": "==7.0.2"
+        },
         "oauthlib": {
             "hashes": [
                 "sha256:bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889",
@@ -689,7 +697,7 @@
                 "sha256:f0b278ce10936db1a37e6954e15a3730bea96a0997c26d7fee88e6c396c2086d",
                 "sha256:f11642dddbb0253cc8853254301b51390ba0081750a8ac03f20ea8103f0c56b6"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==5.5"
         },
         "deprecation": {
@@ -792,7 +800,7 @@
                 "sha256:0a943902919f65c5684ac4e0154b1ad4fac6dcaa5d9f3426b732f1c8b5419be6",
                 "sha256:2bb1680aad211e3c9944dbce1d4ba09a989f04e238296c87fe2139faa26d655d"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==5.8.0"
         },
         "itsdangerous": {
@@ -1122,10 +1130,10 @@
                 "redis"
             ],
             "hashes": [
-                "sha256:aaf1db92e21da51332d4128a17d092fbd868ea749b9e575783015136d6b3fa7d"
+                "sha256:fa0c8bce4d5a0e338fc9b36c946d74f8357f57ab2466e8c85f1fb4bd3d506d0e"
             ],
             "index": "pypi",
-            "version": "==3.3.0"
+            "version": "==3.4.0"
         },
         "toml": {
             "hashes": [
